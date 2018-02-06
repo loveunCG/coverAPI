@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -13,7 +16,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:admin');
     }
 
     /**
@@ -23,6 +26,27 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (! Gate::allows('isActive')) {
+            Auth::logout();
+            return redirect('/login');
+        }
         return view('home');
+    }
+    public function adminMg()
+    {
+        return view('admin.index');
+    }
+    public function agentMg()
+    {
+        return view('agent.index');
+    }
+    public function customerMg()
+    {
+        return view('customer.index');
+    }
+
+    public function insurance()
+    {
+        return view('setting.insurance');
     }
 }

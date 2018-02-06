@@ -9,7 +9,6 @@ use App\Model\JobsModel;
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\Model\InsuranceModel;
-
 class ApiJobController extends Controller
 {
     public function uploadFile(Request $request)
