@@ -57,7 +57,7 @@ class AuthUserCtrl extends Controller {
 			return response()->json(['message' => 'Device Token updation Problem', 'data' => [], 'response_code' => 0], 200);
 		}
 		return response()->json(['message' => 'successfully login and user is verified',
-			'data' => User::where(['email' => $request->email])->first(), compact('token'),
+			'data' => User::where(['email' => $request->email])->first(), 'token'=>$token,
 			'response_code' => 1, 'userVerified' => [1]], 200);
 	}
 
