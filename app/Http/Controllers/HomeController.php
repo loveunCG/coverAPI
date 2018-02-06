@@ -17,6 +17,8 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+
+
     }
 
     /**
@@ -26,10 +28,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('isActive')) {
-            Auth::logout();
-            return redirect('/login');
-        }
+        // if (! Gate::allows('isActive')) {
+        //     Auth::logout();
+        //     return redirect('/login');
+        // }
         return view('home');
     }
     public function adminMg()
