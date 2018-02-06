@@ -9,11 +9,12 @@ use App\Model\JobsModel;
 use Illuminate\Support\Facades\Storage;
 use App\User;
 use App\Model\InsuranceModel;
+use JWTAuth;
+
 class ApiJobController extends Controller
 {
     public function uploadFile(Request $request)
     {
-        //print_r($request->document);exit;
         $document = new DocumentsModel();
         $document->document = url('/') . '/public/uploads/' . Storage::disk('public_uploads')->put('/', $request->document);
         $docName = explode('/', $document->document);
@@ -44,9 +45,23 @@ class ApiJobController extends Controller
         return response()->json(['message' => 'success', 'data' => $documentArr, 'response_code' => 1], 200);
     }
 
+
+    protected function validator(array $data)
+    {
+
+        return Validator::make($data, [
+                  'username' => 'required|string|max:255',
+                  'email' => 'required|string|email|max:255|unique:customers',
+                  'password' => 'required|string|min:6',
+                  'phoneno' => 'required|string|max:255',
+                  'devicename' => 'required|string|max:255',
+                  'usertype' => 'required|string|max:255'
+            ], $messages);
+    }
+
     public function addJob(Request $request)
     {
-        // Recieving All Fields By User
+        $user = JWTAuth::parseToken()->authenticate();
         $userid = (int) $request->userid;
         $name = $request->name;
         $nric = $request->nric;
@@ -57,8 +72,7 @@ class ApiJobController extends Controller
         $pcode = $request->postcode;
         $state = $request->state;
         $country = $request->country;
-        $expired_date = $request->expired_date;
-        // Adding Job
+
         $jobmodel = new JobsModel();
         $jobmodel->user_id = $userid;
         $jobmodel->name = $name;
@@ -72,7 +86,6 @@ class ApiJobController extends Controller
         $jobmodel->country = $country;
         $jobmodel->expired_date = $expired_date;
         $result = $jobmodel->save();
-        //print_r($result);exit();
         try {
             //$result = $jobmodel->save();
             if ($result) {
@@ -91,8 +104,6 @@ class ApiJobController extends Controller
                 return response()->json(['message' => 'Create job problem', 'data' => [], 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            print_r($exception);
-            exit;
             return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
