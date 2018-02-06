@@ -177,7 +177,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        LaravelFCM\FCMServiceProvider::class,
     ],
 
     /*
@@ -229,6 +229,8 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
+        'FCM' => LaravelFCM\Facades\FCM::class,
+	      'FCMGroup' => LaravelFCM\Facades\FCMGroup::class,
     ],
 
 ];

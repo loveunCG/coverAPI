@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class AssignJob extends Model
 {
     //
+    protected $table='assignJobs';
+    protected $fillable=['agent_id','customer_id','job_id'];
 }
