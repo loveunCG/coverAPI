@@ -20,6 +20,8 @@ Route::post('upload', 'API\ApiJobController@uploadFile');
 Route::post('user/login', 'API\AuthUserCtrl@authenticate');
 Route::post('user/sendSMS', 'API\AuthUserCtrl@sendSMS');
 Route::post('user/checkVerfityCode', 'API\AuthUserCtrl@checkPhoneVerify');
+Route::post('user/forgetPassword', 'Auth\ForgotPasswordController@sendEmailToken');
+Route::post('user/resetPassword', 'Autn\ResetPasswordController@resetPassword');
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::post('update', 'API\AuthUserCtrl@updateUser');

@@ -66,13 +66,13 @@ class AuthUserCtrl extends Controller {
 				'username' => $data['username'],
 				'email' => $data['email'],
 				'phoneno' => $data['phoneno'],
-				'verifyToken' => str_random(16),
+				'verifyToken' => $data['verifyToken'],
 				'devicename' => $data['devicename'],
 				'devicetoken' => $data['devicetoken'],
 				'usertype' => $data['usertype'],
 				'email' => $data['email'],
 				'status' => 0,
-				'isAvailable' => 0,
+				'isAvailable' => 1,
 				'password' => bcrypt($data['password'])
 			];
 			return User::create($user);
@@ -80,10 +80,15 @@ class AuthUserCtrl extends Controller {
 	}
 
 	public function signup(Request $request){
+
 		$validator = $this->validator($request->all());
 		if($validator->fails()){
 			return response()->json(['message' => 'Signup is failed', 'data' => $validator->errors(), 'response_code' => 0], 200);
 		}
+		if(!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()){
+			return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
+		}
+
 		$user = $this->create($request->all());
 		try{
 			$credentials = array('email' => $request->email, 'password' =>$request->password);
