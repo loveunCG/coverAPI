@@ -45,7 +45,7 @@ class SettingController extends Controller
 
     public function addInsurance(Request $request)
     {
-        if (!empty($request->insurance_id)) {
+        if ($request->has('insurance_id')) {
             $where = ['insur_id'=>$request->insurance_id];
             $updateData = array(
                 'insurance_name'=>$request->insuranceName,
