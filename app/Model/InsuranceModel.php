@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class InsuranceModel extends Model
 {
     //
-    protected $table='insurance_type';
+    protected $table='insurances';
 
     protected $fillable=['insurance_name', 'insur_comment'];
 }
