@@ -80,6 +80,9 @@ class ApiAgentController extends Controller
      */
     public function assignedJobView(Request $request)
     {
+        if (!$request->has('assignedjobid')) {
+            return response()->json(['message' => 'please submit assign job ID', 'data' => null, 'response_code' => 0], 200);
+        }
         try {
             $job = User::join('jobs', 'users.id', '=', 'jobs.user_id')
                 ->join('documents', 'users.id', '=', 'documents.user_id')
@@ -165,9 +168,11 @@ class ApiAgentController extends Controller
 
     public function allJobView(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                ->where(['assignJobs.agent_id' => $request->agentid])
+                ->where(['assignJobs.agent_id' => $user->id])
                 ->where('assignJobs.jobstatus', '=', null)
                 ->get();
             if (count($job) > 0) {
@@ -184,9 +189,11 @@ class ApiAgentController extends Controller
      */
     public function agentHistory(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                ->where(['assignJobs.agent_id' => $request->agentid])
+                ->where(['assignJobs.agent_id' => $user->id])
                 ->where('assignJobs.jobstatus', '<>', null)
                 ->get();
             if (count($job) > 0) {

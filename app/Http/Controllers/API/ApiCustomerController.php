@@ -152,7 +152,7 @@ class ApiCustomerController extends Controller
     // GET Job Details
     public function jobDetail(Request $request)
     {
-        if (!empty($request->jobId)) {
+        if ($request->has('jobId')) {
             try {
                 $userJobs = JobsModel::where(['id' => $request->jobId])->first();
                 $jobData = array();
@@ -174,7 +174,7 @@ class ApiCustomerController extends Controller
                 return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
             }
         } else {
-            return response()->json(['message' => 'User id not given', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'job id not given', 'data' => [], 'response_code' => 0], 200);
         }
     }
 
