@@ -12,26 +12,24 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('user/signup', 'API\AuthUserCtrl@signup');
-Route::post('job', 'API\ApiJobController@jobDetail');
 
-Route::post('upload/documents', 'API\ApiJobController@addDocuments');
-Route::post('upload', 'API\ApiJobController@uploadFile');
-Route::post('user/login', 'API\AuthUserCtrl@authenticate');
-Route::post('user/sendSMS', 'API\AuthUserCtrl@sendSMS');
-Route::post('user/checkVerfityCode', 'API\AuthUserCtrl@checkPhoneVerify');
+Route::post('user/signup', 'API\ApiAuthUserCtrl@signup');
+Route::post('upload/documents', 'API\ApiCustomerController@addDocuments');
+Route::post('user/login', 'API\ApiAuthUserCtrl@authenticate');
+Route::post('user/sendSMS', 'API\ApiAuthUserCtrl@sendSMS');
+Route::post('user/checkVerfityCode', 'API\ApiAuthUserCtrl@checkPhoneVerify');
 Route::post('user/forgetPassword', 'Auth\ForgotPasswordController@sendEmailToken');
 Route::post('user/resetPassword', 'Autn\ResetPasswordController@resetPassword');
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'user', 'as' => 'user.'], function () {
-    Route::post('update', 'API\AuthUserCtrl@updateUser');
+    Route::post('update', 'API\ApiAuthUserCtrl@update');
 });
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
-    Route::post('create', 'API\ApiJobController@addJob');
-    Route::post('show', 'API\ApiJobController@fetchJob');
-    Route::post('/', 'API\ApiJobController@fetchJob');
-    Route::post('getInsuranceType', 'API\ApiJobController@getInsuranceType');
+    Route::post('create', 'API\ApiCustomerController@addJob');
+    Route::post('show', 'API\ApiCustomerController@fetchJob');
+    Route::post('/', 'API\ApiCustomerController@fetchJob');
+    Route::post('getInsuranceType', 'API\ApiCustomerController@getInsuranceType');
 });
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.'], function () {
@@ -39,6 +37,7 @@ Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.
     Route::post('/job/handover', 'API\ApiAgentController@handOverJob');
     Route::post('/job/view', 'API\ApiAgentController@assignedJobView');
     Route::post('/job/action', 'API\ApiAgentController@jobAction');
+    Route::post('/job/assignedJoblist', 'API\ApiAgentController@assignedJobList');
     Route::post('/all/job/view/', 'API\ApiAgentController@allJobView');
     Route::post('/view/history', 'API\ApiAgentController@agentHistory');
     Route::post('/view/joblist', 'API\ApiAgentController@agentJobList');
@@ -46,3 +45,8 @@ Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.'], function () {
 });
+
+
+// independent API
+Route::post('upload', 'API\ApiCustomerController@uploadFile');
+Route::post('job', 'API\ApiCustomerController@jobDetail');

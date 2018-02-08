@@ -9,13 +9,13 @@ class JobsModel extends Model
 {
     //
     protected $table='jobs';
-    protected $fillable=['user_id','name','nric','phoneno','insurancetype',
-       'indicativesum','address','postcode','state','country','remarks','quotationPrice', 'expired_date'];
+    protected $fillable=['user_id','name','nric','phoneno','insurance_type',
+       'indicative_sum','address','postcode','state','country','remarks','quotation_price', 'expired_date'];
     public function documentJob()
     {
         return $this->hasMany(DocumentsModel::class);
     }
-    public function customers()
+    public function users()
     {
         return $this->belongsTo(User::class);
     }

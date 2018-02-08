@@ -11,7 +11,7 @@ use App\User;
 use App\Model\InsuranceModel;
 use JWTAuth;
 
-class ApiJobController extends Controller
+class ApiCustomerController extends Controller
 {
     public function uploadFile(Request $request)
     {
@@ -19,13 +19,12 @@ class ApiJobController extends Controller
         $document->document = url('/') . '/public/uploads/' . Storage::disk('public_uploads')->put('/', $request->document);
         $docName = explode('/', $document->document);
         $document->fileName = $docName[6];
-        $result = $document->save();
+        // $result = $document->save();
         return response()->json(['message' => 'success', 'data' => $document->fileName, 'response_code' => 1], 200);
     }
 
     public function addDocuments(Request $request)
     {
-
         // uploading multiple documents
         $documentArr = array();
         $arrLength = sizeof($request->document);
@@ -37,64 +36,64 @@ class ApiJobController extends Controller
             $document->document = url('/') . '/public/documents/' . Storage::disk('document_uploads')->put('/', $request->document[$i]);
             $docName = explode('/', $document->document);
             $document->fileName = $docName[6];
-            $result = $document->save();
-            if ($result) {
-                array_push($documentArr, $docName[6]);
-            }
+            // $result = $document->save();
+            array_push($documentArr, $docName[6]);
         }
         return response()->json(['message' => 'success', 'data' => $documentArr, 'response_code' => 1], 200);
     }
 
-
     protected function validator(array $data)
     {
-
         return Validator::make($data, [
-                  'username' => 'required|string|max:255',
-                  'email' => 'required|string|email|max:255|unique:customers',
-                  'password' => 'required|string|min:6',
-                  'phoneno' => 'required|string|max:255',
-                  'devicename' => 'required|string|max:255',
-                  'usertype' => 'required|string|max:255'
-            ], $messages);
+                'username' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
+                'phoneno' => 'required|string|max:255',
+                'devicename' => 'required|string|max:255',
+                'usertype' => 'required|string|max:255'
+          ], $messages);
     }
-
+    // create job records.
     public function addJob(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $userid = (int) $request->userid;
+        if ($user->usertype=="agent") {
+            return response()->json(['message' => 'This Account is no customer', 'data' => null, 'response_code' => 0], 200);
+        }
+        $userid = $user->id;
         $name = $request->name;
         $nric = $request->nric;
         $phone = $request->phoneno;
         $instype = $request->insurencetype;
-        $sum = $request->indicativesum;
+        $sum = $request->indicative_sum;
         $addres = $request->address;
         $pcode = $request->postcode;
         $state = $request->state;
         $country = $request->country;
-
+        $expired_date = $request->expired_date;
+        // create jobs transaction record
         $jobmodel = new JobsModel();
         $jobmodel->user_id = $userid;
         $jobmodel->name = $name;
         $jobmodel->nric = $nric;
         $jobmodel->phoneno = $phone;
-        $jobmodel->insurancetype = $instype;
-        $jobmodel->indicativesum = $sum;
+        $jobmodel->insurance_type = $instype;
+        $jobmodel->indicative_sum = $sum;
         $jobmodel->address = $addres;
         $jobmodel->postcode = $pcode;
         $jobmodel->state = $state;
         $jobmodel->country = $country;
+        $jobmodel->job_status = 0;
         $jobmodel->expired_date = $expired_date;
         $result = $jobmodel->save();
         try {
-            //$result = $jobmodel->save();
             if ($result) {
                 // Update documents table
                 for ($i = 0; $i < count($request->documents); $i++) {
                     $data = [
-                        "user_id" => $userid,
-                        "job_id" => $jobmodel->id,
-                    ];
+                      "user_id" => $userid,
+                      "job_id" => $result->id,
+                  ];
                     $document = DocumentsModel::where(['fileName' => $request->documents[$i]])->update($data);
                 }
                 $jobCreated['job'] = JobsModel::where(['id' => $jobmodel->id])->get();
@@ -112,24 +111,32 @@ class ApiJobController extends Controller
      */
     public function fetchJob(Request $request)
     {
-        if (!empty($request->userId)) {
-            try {
-                $userJobs = JobsModel::where(['user_id' => $request->userId])->get();
-                $usrData = User::where(['id' => $request->userId])->select('id as agent_id', 'username as agent_name', 'image as agent_photo_url')->first();
-
+        $user = JWTAuth::parseToken()->authenticate();
+        try {
+            if ($user->usertype == 'agent') {
+                $userJobs = JobsModel::join('users', 'users.id', '=', 'jobs.user_id')->get();
                 $jobData = array();
                 for ($i = 0; $i < count($userJobs); $i++) {
                     $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
-                    $insuranceData = InsuranceModel::where(['insur_id' => $userJobs[$i]['insurancetype']])->first();
+                    $insuranceData = InsuranceModel::where(['insur_id' => $userJobs[$i]['insurance_type']])->first();
                     $userJobs[$i]['documents'] = $documents;
-                    $userJobs[$i]['agent_id'] = $usrData->agent_id;
-                    $userJobs[$i]['agent_name'] = $usrData->agent_name;
-                    $userJobs[$i]['agent_photo_url'] = $usrData->agent_photo_url;
-                    $userJobs[$i]['insurance_id'] = $insuranceData->insur_id;
-                    $userJobs[$i]['insurance_name'] = $insuranceData->insurance_name;
-                    $data = [
-                        "jobs" => $userJobs[$i],
-                    ];
+                    $data = ["jobs" => $userJobs[$i]];
+                    array_push($jobData, $data);
+                }
+                if (count($jobData) > 0) {
+                    return response()->json(['message' => 'All  posted jobs by cutomer', 'data' => $jobData, 'response_code' => 1], 200);
+                } else {
+                    return response()->json(['message' => 'there is no posted jobs', 'data' => [], 'response_code' => 0], 200);
+                }
+            } else {
+                $userJobs = JobsModel::join('users', 'users.id', '=', 'jobs.user_id')
+                  ->where(['user_id' => $user->id])->get();
+                $jobData = array();
+                for ($i = 0; $i < count($userJobs); $i++) {
+                    $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
+                    $insuranceData = InsuranceModel::where(['insur_id' => $userJobs[$i]['insurance_type']])->first();
+                    $userJobs[$i]['documents'] = $documents;
+                    $data = ["jobs" => $userJobs[$i]];
                     array_push($jobData, $data);
                 }
                 if (count($jobData) > 0) {
@@ -137,11 +144,9 @@ class ApiJobController extends Controller
                 } else {
                     return response()->json(['message' => 'No job is created by this person', 'data' => [], 'response_code' => 0], 200);
                 }
-            } catch (\Exception $exception) {
-                return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
             }
-        } else {
-            return response()->json(['message' => 'User id id not given', 'data' => [], 'response_code' => 0], 200);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
     // GET Job Details
@@ -152,12 +157,12 @@ class ApiJobController extends Controller
                 $userJobs = JobsModel::where(['id' => $request->jobId])->first();
                 $jobData = array();
                 $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
-                $insuranceData = InsuranceModel::where(['insur_id' => $userJobs->insurancetype])->first();
+                $insuranceData = InsuranceModel::where(['insur_id' => $userJobs->insurance_type])->first();
                 $userJobs['documents'] = $documents;
                 $userJobs['insurance_id'] = $insuranceData->insur_id;
                 $userJobs['insurance_name'] = $insuranceData->insurance_name;
                 $data = [
-                    "jobs" => $userJobs,
+                  "jobs" => $userJobs,
                 ];
                 array_push($jobData, $data);
                 if (count($jobData) > 0) {
@@ -193,17 +198,16 @@ class ApiJobController extends Controller
             $send_data = [];
             foreach ($InsuranceDatas as $InsuranceData) {
                 $send_data[] = array(
-                    'insurance_name'=>$InsuranceData->insurance_name,
-                    'id'=>$InsuranceData->insur_id
-                );
+                  'insurance_name'=>$InsuranceData->insurance_name,
+                  'id'=>$InsuranceData->insur_id
+              );
             }
 
             if (count($InsuranceDatas) > 0) {
                 return response()->json(['message' => 'insurance', 'data' => $send_data, 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'insurId id not given', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'There is no INsurance Data', 'data' => [], 'response_code' => 0], 200);
             }
         }
     }
-    //
 }

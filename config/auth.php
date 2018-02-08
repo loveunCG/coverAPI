@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'customers',
+        'passwords' => 'users',
     ],
 
 
@@ -29,7 +29,7 @@ return [
     | here which uses session storage and the Eloquent user provider.
     |
     | All authentication drivers have a user provider. This defines how the
-    | customers are actually retrieved out of your database or other storage
+    | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
     | Supported: "session", "token"
@@ -39,7 +39,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'customers',
+            'provider' => 'users',
         ],
         'admin' => [
             'driver' => 'session',
@@ -47,7 +47,7 @@ return [
         ],
         'api' => [
             'driver' => 'token',
-            'provider' => 'customers',
+            'provider' => 'users',
         ]
     ],
 
@@ -57,7 +57,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | All authentication drivers have a user provider. This defines how the
-    | customers are actually retrieved out of your database or other storage
+    | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
     | If you have multiple user tables or models you may configure multiple
@@ -69,7 +69,7 @@ return [
     */
 
     'providers' => [
-        'customers' => [
+        'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
@@ -78,9 +78,9 @@ return [
             'model' => App\Admin::class,
         ],
 
-        // 'customers' => [
+        // 'users' => [
         //     'driver' => 'database',
-        //     'table' => 'customers',
+        //     'table' => 'users',
         // ],
     ],
 
@@ -100,8 +100,8 @@ return [
     */
 
     'passwords' => [
-        'customers' => [
-            'provider' => 'customers',
+        'users' => [
+            'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
         ],

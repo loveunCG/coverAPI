@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateCustomersTable extends Migration
+class UpdateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class UpdateCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
               $table->string('refferalcode')->nullable()->default(null)->after('usertype');
               $table->double('longitude')->nullable()->default(null)->after('refferalcode');
               $table->double('latitude')->nullable()->default(null)->after('longitude');
@@ -28,7 +28,7 @@ class UpdateCustomersTable extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['refferalcode','longitude','latitude','isAvailable']);
         });
     }

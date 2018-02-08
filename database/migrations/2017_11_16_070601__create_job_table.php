@@ -16,16 +16,17 @@ class CreateJobTable extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('name');
             $table->integer('nric');
             $table->string('phoneno');
-            $table->string('insurancetype');
-            $table->integer('indicativesum');
+            $table->string('insurance_type');
+            $table->integer('indicative_sum');
+            $table->tinyInteger('job_status');
             $table->string('address')->default('null');
             $table->string('postcode')->default('null');
             $table->string('state')->default('null');
-            $table->string('quotationPrice')->default('null');
+            $table->string('quotation_price')->default('null');
             $table->dateTime('expired_date');
             $table->string('country')->default('null');
             $table->timestamps();

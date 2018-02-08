@@ -1,0 +1,56 @@
+{
+  "base_uri": "http://easycover.my/easycover/api",
+  "users": {
+    "/jobs/create":{
+      "request":{
+        "name":"customer name",
+        "nric":"nric",
+        "insurencetype":" type of insurance",
+        "indicative_sum":" indicative sum ",
+        "address":"address",
+        "postcode":"postcode",
+        "postcode":"postcode",
+        "state":"state",
+        "country":"country",
+        "expired_date":"expired date and time"
+      },
+      "response":{
+
+      }
+    },
+    "/jobs/show":{
+      "request":{
+        "name":"customer name",
+        "nric":"nric",
+        "insurencetype":" type of insurance",
+        "indicative_sum":" indicative sum ",
+        "address":"address",
+        "postcode":"postcode",
+        "postcode":"postcode",
+        "state":"state",
+        "country":"country",
+        "expired_date":"expired date and time"
+      },
+      "response":{
+
+      }
+    },
+    "/jobs/create":{
+      "request":{
+        "name":"customer name",
+        "nric":"nric",
+        "insurencetype":" type of insurance",
+        "indicative_sum":" indicative sum ",
+        "address":"address",
+        "postcode":"postcode",
+        "postcode":"postcode",
+        "state":"state",
+        "country":"country",
+        "expired_date":"expired date and time"
+      },
+      "response":{
+
+      }
+    }
+  }
+}

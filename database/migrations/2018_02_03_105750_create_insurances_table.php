@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInsurancetypeTable extends Migration
+class CreateInsurancesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateInsurancetypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('insurancetype', function (Blueprint $table) {
+        Schema::create('insurances', function (Blueprint $table) {
             $table->increments('insur_id');
             $table->string('insurance_name')->nullable();
             $table->string('insur_comment')->nullable();
@@ -28,6 +28,6 @@ class CreateInsurancetypeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurancetype');
+        Schema::dropIfExists('insurances');
     }
 }
