@@ -86,9 +86,9 @@ class ApiAuthUserCtrl extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Signup is failed', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
-        if (!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()) {
-            return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
-        }
+        // if (!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()) {
+        //     return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
+        // }
 
         $user = $this->create($request->all());
         try {
