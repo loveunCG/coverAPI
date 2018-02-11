@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\DocumentsModel;
 use App\Model\JobsModel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use App\User;
 use App\Model\InsuranceModel;
 use JWTAuth;
@@ -59,6 +60,20 @@ class ApiCustomerController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->usertype=="agent") {
             return response()->json(['message' => 'This Account is no customer', 'data' => null, 'response_code' => 0], 200);
+        }
+        $validator = Validator::make($request->all(), [
+          'name' => 'required',
+          'nric' => 'required',
+          'insurencetype' => 'required',
+          'phoneno' => 'required',
+          'indicative_sum' => 'required',
+          'address' => 'required',
+          'state' => 'required',
+          'expired_date' => 'required',
+          'country' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
         $userid = $user->id;
         $name = $request->name;
