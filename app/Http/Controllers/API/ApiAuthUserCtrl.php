@@ -10,9 +10,10 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
-use Twilio;
+use Aloha\Twilio\Twilio;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Auth\Events\Registered;
+// use Aloha\Twilio\Support\Laravel\Facade;
 
 class ApiAuthUserCtrl extends Controller
 {
@@ -32,7 +33,9 @@ class ApiAuthUserCtrl extends Controller
             'password' => 'required|string|min:6',
             'phoneno' => 'required|string|max:255',
             'devicename' => 'required|string|max:255',
-            'usertype' => 'required|string|max:255'
+            'usertype' => 'required|string|max:255',
+            'devicetoken' => 'required|string|max:255',
+            'verifyToken' => 'required|string|max:255'
         ], $messages);
     }
 
@@ -118,22 +121,32 @@ class ApiAuthUserCtrl extends Controller
     public function sendSMS(Request $request)
     {
         $message = $this->sms_content();
-        if (!$request->phoneno) {
+        if (!$request->has('phoneno')) {
             return response()->json(['message' => 'please insert correct phone number', 'data' => [], 'response_code' => 0], 200);
         }
 
         try {
-            Twilio::message($request->phoneno, $message);
-            $phoneVerify = new PhoneVerify();
-            $phoneVerify->phone_num = $request->phoneno;
-            $phoneVerify->verify_num = $request->$message;
-            if ($phoneVerify->save()) {
+            $twilio = new Twilio('ACf7c4e02a91212e68794a3acd620cd136', 'b4540d1cf92cc729122919d7ec0eb57f', '123261381', false);
+            $twilio->message($request->phoneno, $message);
+            // Twilio::message($request->phoneno, $message);
+            $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
+            if (empty($checkPhone)) {
+                $phoneVerify = new PhoneVerify();
+                $phoneVerify->phone_num = $request->phoneno;
+                $phoneVerify->verify_num = $message;
+                $phoneVerify->save();
+            } else {
+                $phoneVerify = PhoneVerify::findOrFail($checkPhone->id);
+                $phoneVerify->verify_num = $message;
+                $phoneVerify->save();
+            }
+            if ($phoneVerify->id) {
                 return response()->json(['message' => 'SMS is already sent', 'data' => [], 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'there is no verify number', 'data' => [], 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Cannot send SMS', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Cannot send SMS', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
 
