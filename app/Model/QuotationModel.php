@@ -1,19 +1,12 @@
 <?php
 
-namespace App\model;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
 class QuotationModel extends Model
 {
-  protected $table='quotation';
-  protected $fillable=['user_id','jod_id','quotation_price','quotation_description'];
-  public function quotationJob()
-  {
-      return $this->hasMany(JobsModel::class);
-  }
-  public function users()
-  {
-      return $this->belongsTo(User::class);
-  }
+    //
+    protected $table='quotations';
+    protected $fillable=['agent_id','job_id','quotation_description','quotation_price'];
 }

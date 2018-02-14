@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use JWTAuth;
 
-class ApiAgentController extends Controller {
-
-
+class ApiAgentController extends Controller
+{
     //
-    public function assignAgent(Request $request) {
+    public function assignAgent(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
         if (!empty($user->id)) {
             try {
@@ -52,7 +52,16 @@ class ApiAgentController extends Controller {
         }
     }
 
-    public function handOverJob(Request $request) {
+    /**
+    *
+    *
+    *
+    *
+    *
+    */
+
+    public function handOverJob(Request $request)
+    {
         $validator = Validator::make($request->all(), [
                     'agentid' => 'required',
                     'customerid' => 'required',
@@ -78,16 +87,17 @@ class ApiAgentController extends Controller {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * View assigned job by a specific agent
-     * 
-     * 
-     * 
+     *
+     *
+     *
      */
-    public function assignedJobView(Request $request) {
+    public function assignedJobView(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
-        
+
         if (!$request->has('assignedjobid')) {
             return response()->json(['message' => 'please submit assign job ID', 'data' => null, 'response_code' => 0], 200);
         }
@@ -106,13 +116,14 @@ class ApiAgentController extends Controller {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * Update   assigned job status i.e reject or accept
-     * 
-     * 
+     *
+     *
      */
-    public function jobAction(Request $request) {
+    public function jobAction(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->usertype == 'customer') {
             return response()->json(['message' => 'You must be agent', 'data' => null, 'response_code' => 0], 200);
@@ -146,15 +157,16 @@ class ApiAgentController extends Controller {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * view all  job assigned to a  particular agent
-     * 
+     *
      * which are not taken any action
-     * 
-     * 
+     *
+     *
      */
-    public function acceptedJobList(Request $request) {
+    public function acceptedJobList(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
         try {
             if ($user->usertype == 'agent') {
@@ -178,8 +190,17 @@ class ApiAgentController extends Controller {
             return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
-
-    public function allJobView(Request $request) {
+    /**
+     *
+     *
+     * view all  job assigned to a  particular agent
+     *
+     * which are not taken any action
+     *
+     *
+     */
+    public function allJobView(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
 
         try {
@@ -196,18 +217,18 @@ class ApiAgentController extends Controller {
             return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
-
     /**
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
      * Agent history i.e view all job that are accepted are rejected by particular agent
-     * 
-     * 
-     * 
+     *
+     *
+     *
      */
-    public function agentHistory(Request $request) {
+    public function agentHistory(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
 
         try {
@@ -227,27 +248,30 @@ class ApiAgentController extends Controller {
 
     //----------------------quotaion Modules
     // add quotation to jobs.
-    public function addQuotation(Request $request) {
+    public function addQuotation(Request $request)
+    {
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->usertype == 'customer') {
             return response()->json(['message' => 'this is no agent', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
                     'quotation_price' => 'required',
-                    'jod_id' => 'required',
+                    'job_id' => 'required',
                     'assign_id' => 'required',
                     'quotation_description' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Insert data error', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
-        $quotaion = new QuotationModel();
-        $question->quotation_price = $request->quotation_price;
-        $question->jod_id = $request->jod_id;
-        $question->agent_id = $user->id;
-        $question->quotation_description = $request->quotation_description;
+        $save_data = array(
+          'agent_id' => $user->id,
+          'job_id' => $request->job_id,
+          'quotation_price' => $request->quotation_price,
+          'quotation_description' => $request->quotation_description
+        );
+
         try {
-            if ($question->save()) {
+            if ($question = QuotationModel::create($save_data)) {
                 $ajob = AssignJob::findOrFail($request->assign_id);
                 $ajob->quotation_id = $question->id;
                 $ajob->save();
@@ -256,12 +280,14 @@ class ApiAgentController extends Controller {
                 return response()->json(['message' => 'Addition is failed', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => $question, 'response_code' => 0], 500);
         }
     }
 
     // get quotation
-    public function getQuotation(Request $request) {
+    public function getQuotation(Request $request)
+    {
+
         $user = JWTAuth::parseToken()->authenticate();
         if ($request->has('quotaion_id')) {
             $quotation = QuotationModel::join('jobs', 'jobs.id', '=', 'quotations.job_id')
@@ -279,5 +305,4 @@ class ApiAgentController extends Controller {
             }
         }
     }
-
 }

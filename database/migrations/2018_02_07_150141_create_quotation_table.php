@@ -17,8 +17,8 @@ class CreateQuotationTable extends Migration
             $table->increments('id');
             $table->integer('agent_id')->unsigned()->index();
             $table->foreign('agent_id')->references('id')->on('users')->onDelete('cascade');
-            $table->integer('jod_id')->unsigned()->index();
-            $table->foreign('jod_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->integer('job_id')->unsigned()->index();
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
             $table->string('quotation_price', 100);
             $table->text('quotation_description');
             $table->timestamps();
