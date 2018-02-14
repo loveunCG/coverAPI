@@ -10,10 +10,10 @@ use Illuminate\Http\Request;
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
-|
+|http://easycover.my/easycover/api/customer/create
 */
 
-Route::post('user/signup', 'API\ApiAuthUserCtrl@signup');
+Route::post('customer/create', 'API\ApiAuthUserCtrl@signup');
 Route::post('user/login', 'API\ApiAuthUserCtrl@authenticate');
 Route::post('user/sendSMS', 'API\ApiAuthUserCtrl@sendSMS');
 Route::post('user/checkVerfityCode', 'API\ApiAuthUserCtrl@checkPhoneVerify');
