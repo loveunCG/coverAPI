@@ -9,7 +9,6 @@
         "indicative_sum": " indicative sum ",
         "address": "address",
         "postcode": "postcode",
-        "postcode": "postcode",
         "state": "state",
         "country": "country",
         "expired_date": "expired date and time"
@@ -75,7 +74,7 @@
         "result ": "if account is agent, posted job from all customer else job by customer "
       }
     },
-    "agent//view/joblist": {
+    "agent/view/joblist": {
       "request": {},
       "response": {
         "result ": "if account is agent, posted job from all customer else job by customer "
@@ -98,7 +97,7 @@
 
       }
     },
-    "jobs/handOverJob": {
+    "jobs/handover": {
       "request": {
         "agentid": "recieved verify code",
         "customerid": "customer of this job",
@@ -132,7 +131,7 @@
         "data": "if agent, job list self accpeted  else be accepted job list"
       }
     },
-    "agent/assign": {
+    "agent/assign": { // this is no complete
       "request": {},
       "response": {
         "data": "assigned agent model"

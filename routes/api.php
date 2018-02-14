@@ -28,12 +28,11 @@ Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'jobs', 'as' => 'jobs.']
     Route::post('create', 'API\ApiCustomerController@addJob');
     Route::post('show', 'API\ApiCustomerController@fetchJob');
     Route::post('getInsuranceType', 'API\ApiCustomerController@getInsuranceType');
-    Route::post('detail', 'API\ApiCustomerController@jobDetail');
+    Route::post('jobDetail', 'API\ApiCustomerController@jobDetail');
     Route::post('/handover', 'API\ApiAgentController@handOverJob');
     Route::post('/view', 'API\ApiAgentController@assignedJobView');
     Route::post('/action', 'API\ApiAgentController@jobAction');
     Route::post('/acceptedJobList', 'API\ApiAgentController@acceptedJobList');
-
 });
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.'], function () {

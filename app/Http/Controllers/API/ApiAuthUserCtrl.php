@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Twilio\Exceptions\EnvironmentException;
 use JWTAuth;
 use Aloha\Twilio\Twilio;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -121,13 +122,14 @@ class ApiAuthUserCtrl extends Controller
     public function sendSMS(Request $request)
     {
         $message = $this->sms_content();
+
         if (!$request->has('phoneno')) {
             return response()->json(['message' => 'please insert correct phone number', 'data' => [], 'response_code' => 0], 200);
         }
 
         try {
-            $twilio = new Twilio('ACf7c4e02a91212e68794a3acd620cd136', 'b4540d1cf92cc729122919d7ec0eb57f', '123261381', false);
-            $twilio->message($request->phoneno, $message);
+            $twilio = new Twilio('ACcde22840e5d0241617cf7cffc1b0c7d8', 'a02b38342cfa6c23225bb6a5e7e65909', '+12013895496', false);
+            $twilio->message($request->phoneno, 'Verify code for EASYCOVER security is : '.$message.' please check this. Thank you!');
             // Twilio::message($request->phoneno, $message);
             $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
             if (empty($checkPhone)) {

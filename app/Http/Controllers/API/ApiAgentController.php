@@ -8,13 +8,15 @@ use App\Model\AssignJob;
 use App\Model\JobsModel;
 use App\Model\QuotationModel;
 use App\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use JWTAuth;
 
-class ApiAgentController extends Controller
-{
+class ApiAgentController extends Controller {
+
+
     //
-    public function assignAgent(Request $request)
-    {
+    public function assignAgent(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
         if (!empty($user->id)) {
             try {
@@ -27,35 +29,34 @@ class ApiAgentController extends Controller
                         $lon = $val->latitude;
                     }
                     $agents = DB::table("users")
-                        ->select("users.*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
+                            ->select("users.*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
 		                     * cos(radians(users.latitude))
 		                   * cos(radians(users.longitude) - radians(" . $lon . "))
 		                 + sin(radians(" . $lat . "))
 		                 * sin(radians(users.latitude))) AS distance"))
-                        ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
-                        ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
-                        ->groupBy("users.id")
-                        ->orderBy('distance', 'desc')
-                        ->take(3)
-                        ->get();
+                            ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
+                            ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
+                            ->groupBy("users.id")
+                            ->orderBy('distance', 'desc')
+                            ->take(3)
+                            ->get();
                     return response()->json(['message' => 'Nearest agents', 'data' => $agents, 'response_code' => 1], 200);
                 } else {
                     return response()->json(['message' => 'Custmor is not exist', 'data' => [], 'response_code' => 0], 200);
                 }
             } catch (\Exception $exception) {
-                return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+                return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
             }
         } else {
             return response()->json(['message' => 'Customer id is missing', 'data' => [], 'response_code' => 0], 200);
         }
     }
 
-    public function handOverJob(Request $request)
-    {
+    public function handOverJob(Request $request) {
         $validator = Validator::make($request->all(), [
-          'agentid' => 'required',
-          'customerid' => 'required',
-          'jobid' => 'required'
+                    'agentid' => 'required',
+                    'customerid' => 'required',
+                    'jobid' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
@@ -72,45 +73,55 @@ class ApiAgentController extends Controller
                 return response()->json(['message' => 'job  assigning error', 'data' => [], 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
+
     /**
-     * view assigned job by a specific agent
+     * 
+     * 
+     * View assigned job by a specific agent
+     * 
+     * 
+     * 
      */
-    public function assignedJobView(Request $request)
-    {
+    public function assignedJobView(Request $request) {
+        $user = JWTAuth::parseToken()->authenticate();
+        
         if (!$request->has('assignedjobid')) {
             return response()->json(['message' => 'please submit assign job ID', 'data' => null, 'response_code' => 0], 200);
         }
         try {
             $job = User::join('jobs', 'users.id', '=', 'jobs.user_id')
-                ->join('documents', 'users.id', '=', 'documents.user_id')
-                ->join('assignJobs', 'users.id', '=', 'assignJobs.customer_id')
-                ->where(['assignJobs.id' => $request->assignedjobid])->get();
+                            ->join('assignjobs', 'users.id', '=', 'assignjobs.customer_id')
+                            ->where(['assignjobs.id' => $request->assignedjobid])->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'job is assigned', 'data' => $job, 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'This job is not assigned yet', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'This job is not assigned yet', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
+
     /**
-     * update   assigned job status i.e reject or accept
+     * 
+     * 
+     * Update   assigned job status i.e reject or accept
+     * 
+     * 
      */
-    public function jobAction(Request $request)
-    {
+    public function jobAction(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->usertype == 'customer') {
             return response()->json(['message' => 'You must be agent', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
-                'status' => 'required',
-                'jobid' => 'required',
-                'costomerId' => 'required',
-           ]);
+                    'status' => 'required',
+                    'jobid' => 'required',
+                    'costomerId' => 'required',
+        ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Some fields missing', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
@@ -135,17 +146,20 @@ class ApiAgentController extends Controller
     }
 
     /**
+     * 
+     * 
      * view all  job assigned to a  particular agent
+     * 
      * which are not taken any action
+     * 
+     * 
      */
-
-    public function acceptedJobList(Request $request)
-    {
+    public function acceptedJobList(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
         try {
-            if ($user->usertype=='agent') {
+            if ($user->usertype == 'agent') {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignjobs.job_id')
-                    ->where(['assignJobs.agent_id' => $user->id])->get();
+                                ->where(['assignJobs.agent_id' => $user->id])->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);
                 } else {
@@ -153,7 +167,7 @@ class ApiAgentController extends Controller
                 }
             } else {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignjobs.job_id')
-                  ->where(['assignJobs.customer_id' => $user->id])->get();
+                                ->where(['assignJobs.customer_id' => $user->id])->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);
                 } else {
@@ -165,16 +179,14 @@ class ApiAgentController extends Controller
         }
     }
 
-
-    public function allJobView(Request $request)
-    {
+    public function allJobView(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
 
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                ->where(['assignJobs.agent_id' => $user->id])
-                ->where('assignJobs.jobstatus', '=', null)
-                ->get();
+                    ->where(['assignJobs.agent_id' => $user->id])
+                    ->where('assignJobs.jobstatus', '=', null)
+                    ->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'All assigned job', 'data' => $job, 'response_code' => 1], 200);
             } else {
@@ -184,18 +196,25 @@ class ApiAgentController extends Controller
             return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
+
     /**
+     * 
+     * 
+     * 
+     * 
      * Agent history i.e view all job that are accepted are rejected by particular agent
+     * 
+     * 
+     * 
      */
-    public function agentHistory(Request $request)
-    {
+    public function agentHistory(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
 
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                ->where(['assignJobs.agent_id' => $user->id])
-                ->where('assignJobs.jobstatus', '<>', null)
-                ->get();
+                    ->where(['assignJobs.agent_id' => $user->id])
+                    ->where('assignJobs.jobstatus', '<>', null)
+                    ->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'Agent History', 'data' => $job, 'response_code' => 1], 200);
             } else {
@@ -205,19 +224,19 @@ class ApiAgentController extends Controller
             return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
         }
     }
+
     //----------------------quotaion Modules
     // add quotation to jobs.
-    public function addQuotation(Request $request)
-    {
+    public function addQuotation(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->usertype=='customer') {
+        if ($user->usertype == 'customer') {
             return response()->json(['message' => 'this is no agent', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
-          'quotation_price' => 'required',
-          'jod_id' => 'jod_id',
-          'assign_id' => 'assign_id',
-          'quotation_description' => 'required'
+                    'quotation_price' => 'required',
+                    'jod_id' => 'required',
+                    'assign_id' => 'required',
+                    'quotation_description' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Insert data error', 'data' => $validator->errors(), 'response_code' => 0], 200);
@@ -242,23 +261,23 @@ class ApiAgentController extends Controller
     }
 
     // get quotation
-    public function getQuotation(Request $request)
-    {
+    public function getQuotation(Request $request) {
         $user = JWTAuth::parseToken()->authenticate();
         if ($request->has('quotaion_id')) {
             $quotation = QuotationModel::join('jobs', 'jobs.id', '=', 'quotations.job_id')
-                    ->where(['quotations.id'=>$request->quotaion_id])->get();
+                            ->where(['quotations.id' => $request->quotaion_id])->get();
             return response()->json(['message' => 'Get quotation by quotation ID', 'data' => $quotation, 'response_code' => 1], 200);
         } else {
             if ($user->usertype == 'agent') {
                 $quotations = QuotationModel::join('jobs', 'jobs.id', '=', 'quotations.job_id')
-                      ->where(['quotations.agent_id'=>$user->id])->get();
+                                ->where(['quotations.agent_id' => $user->id])->get();
                 return response()->json(['message' => 'Get quotation list by agent id', 'data' => $quotations, 'response_code' => 1], 200);
             } else {
                 $quotations = JobsModel::join('quotations', 'jobs.id', '=', 'quotations.job_id')
-                      ->where(['jobs.user_id'=>$user->id])->get();
+                                ->where(['jobs.user_id' => $user->id])->get();
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
         }
     }
+
 }
