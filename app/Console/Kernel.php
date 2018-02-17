@@ -1,6 +1,10 @@
 <?php
-
+/**
+ * this is Cron
+ */
 namespace App\Console;
+
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -16,6 +20,8 @@ class Kernel extends ConsoleKernel
         //
     ];
 
+    public $count = 0;
+
     /**
      * Define the application's command schedule.
      *
@@ -24,6 +30,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $this->count++;
+        $schedule->call(function () {
+            Storage::disk('local')->put('file.txt', $this->count);
+        })->everyMinute();
+
         // $schedule->command('inspire')
         //          ->hourly();
     }

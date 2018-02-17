@@ -51,4 +51,11 @@ class HomeController extends Controller
     {
         return view('setting.insurance');
     }
+
+    /**
+     * 
+     */
+    public function jobsMg(){
+        return view('jobs.index');
+    }
 }
