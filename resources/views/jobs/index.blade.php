@@ -127,12 +127,11 @@
         let table = [];
         const tableUrl = "{{url('jobs/getJobListData')}}";
         let addModel, editModal;
-
         $(document).ready(function () {
             addModel = $("#addInsurance").iziModal();
             editModal = $('#editInsurance').iziModal();
-            table = $('#InsuranceInfoTable').DataTable({
-                "ajax": strUrl,
+            table = $('#job_list_talbe').DataTable({
+                "ajax": tableUrl,
                 bStateSave: !0,
                 columnDefs: [{
                     orderable: !1,
@@ -146,7 +145,7 @@
                 ]
             });
 
-            $('#InsuranceInfoTable tbody').on('click', 'tr', function () {
+            $('#job_list_talbe tbody').on('click', 'tr', function () {
                 if ($(this).hasClass('selected')) {
                     $(this).removeClass('selected info');
                 } else {
@@ -291,6 +290,5 @@
 
 
         }
-
     </script>
 @endsection

@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use App\Model\JobsModel;
+
 
 class User extends Authenticatable
 {
@@ -29,5 +31,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     protected $table = 'users';
+
+    public function job()
+    {
+        return $this->hasMany(JobsModel::class);
+    }
 
 }
