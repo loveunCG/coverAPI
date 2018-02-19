@@ -51,9 +51,10 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'se
     Route::post('/addInsurance', 'Web\SettingController@addInsurance');
 });
 
-Route::group(['middleware' => ['auth:admin'], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
+Route::group(['middleware' => [], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
     Route::get('/', 'HomeController@jobsMg');
     Route::get('/getJobListData', 'Web\JobsController@getJobList');
-    Route::get('/getInsurance/{id?}', 'Web\SettingController@getInsurance');
+    Route::get('/getjobdetail/{id?}', 'Web\JobsController@JobDetailView');
+    Route::get('/getQuotationList/{id?}', 'Web\JobsController@getQuotationList');
     Route::post('/addInsurance', 'Web\SettingController@addInsurance');
 });

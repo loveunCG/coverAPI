@@ -16,6 +16,6 @@ class DocumentsModel extends Model
     }
     public function job()
     {
-        return  $this->belongsTo(JobsModel::class);
+        return  $this->belongsTo(JobsModel::class, 'job_id');
     }
 }

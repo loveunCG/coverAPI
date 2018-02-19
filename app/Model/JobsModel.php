@@ -17,6 +17,16 @@ class JobsModel extends Model
     }
     public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function assignedJob()
+    {
+        return $this->hasMany(AssignJob::class, 'job_id');
+    }
+
+    public function quotations()
+    {
+        return $this->hasMany(QuotationModel::class, 'job_id');
     }
 }

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\JobsModel;
 use App\Model\InsuranceModel;
+use App\Model\AssignJob;
+use App\Model\QuotationModel;
+use App\User;
 
 class JobsController extends Controller
 {
@@ -15,7 +18,6 @@ class JobsController extends Controller
         $i = 1;
         if (count($jobs) > 0) {
             foreach ($jobs as $job) {
-
                 if ($job->job_status==1) {
                     $jobStatus = '<a href="#" class="btn btn-primary-alt">Accepted</a>';
                 } elseif ($job->job_status==0) {
@@ -23,8 +25,10 @@ class JobsController extends Controller
                 } else {
                     $jobStatus = '<a href="#" class="btn btn-inverse-alt">Rejected</a>';
                 }
+                $job_id = '<input type="hidden" class="job_id" value="' . $job->id . '">';
+
                 $job_list['data'][] = array(
-                $i++,
+                $i++.$job_id,
                 $job->name,
                 $job->nric,
                 InsuranceModel::where('insur_id', $job->insurance_type)->first()->insurance_name,
@@ -33,6 +37,7 @@ class JobsController extends Controller
                 $job->postcode,
                 $job->state,
                 $job->expired_date,
+                User::findOrFail($job->user_id)->username,
                 $jobStatus,
               );
             }
@@ -54,14 +59,75 @@ class JobsController extends Controller
         return response()->json($job_list);
     }
 
-    public function removeJob(Request $request){
-
-
-
+    public function removeJob(Request $request)
+    {
+        $job_id = $request->job_id;
+        if ($job_id) {
+            try {
+                JobsModel::findOrFail($job_id)->delete();
+                return response()->json(['message' => 'Delete successfully!', 'data' => null, 'response_code' => 1], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Delete successfully!', 'data' => null, 'response_code' => 0], 500);
+            }
+        } else {
+            return response()->json(['message' => 'Please insert Job ID', 'data' => null, 'response_code' => 0], 200);
+        }
     }
 
-    public function JobDetailView(Request $request){
-
+    public function JobDetailView(Request $request)
+    {
+        if ($request->has('job_id')) {
+            try {
+                $job_id = $request->job_id;
+                $job_data = JobsModel::findOrFail($job_id);
+                $user = $job_data->users;
+                $assignedJob = $job_data->assignedJob;
+                $quotatioin = $job_data->quotations;
+                return response()->json([
+                  'message' => 'successfully!',
+                  'data' => $job_data,
+                  'response_code' => 1
+                ], 200);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Can not get job Data!', 'data' => $e, 'response_code' => 0], 500);
+            }
+        } else {
+            return response()->json(['message' => 'job_id is required', 'data' => null, 'response_code' => 0], 200);
+        }
     }
 
+    public function getQuotationList(Request $request)
+    {
+        $send_data = [];
+
+        if ($job_id = $request->job_id) {
+            $quotations = QuotationModel::where('job_id', $job_id)->get();
+        } else {
+            $quotations = QuotationModel::all();
+        }
+        if (count($quotations)>0) {
+            $i = 1;
+            foreach ($quotations as $quotation) {
+                $send_data['data'][]=[
+                  $i++,
+                  $quotation->agent->username,
+                  $quotation->quotation_price,
+                  $quotation->quotation_description,
+                  $quotation->jobs->job_status
+                ];
+            }
+        } else {
+            $send_data['data'][0]=[
+              '',
+              '',
+              '',
+              '',
+              '',
+              '',
+              '',
+              ''
+            ];
+        }
+        return response()->json($send_data);
+    }
 }

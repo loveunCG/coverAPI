@@ -14,6 +14,7 @@ use JWTAuth;
 use Aloha\Twilio\Twilio;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Auth\Events\Registered;
+
 // use Aloha\Twilio\Support\Laravel\Facade;
 
 class ApiAuthUserCtrl extends Controller

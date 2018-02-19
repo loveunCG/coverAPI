@@ -7,7 +7,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use App\Model\JobsModel;
 
-
 class User extends Authenticatable
 {
     use Notifiable, CanResetPassword;
@@ -17,7 +16,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-     protected $fillable=['username','email','phoneno','password','verifyToken','status',
+    protected $fillable=['username','email','phoneno','password','verifyToken','status',
                           'devicename','devicetoken','usertype','refferalcode',
                           'longitude','latitude','isAvailable'];
 
@@ -32,9 +31,13 @@ class User extends Authenticatable
     ];
     protected $table = 'users';
 
-    public function job()
+    public function jobs()
     {
-        return $this->hasMany(JobsModel::class);
+        return $this->hasMany(JobsModel::class, 'user_id');
     }
 
+    public function quotationAgent()
+    {
+        return $this->hasMany(QuotationModel::class, 'agent_id');
+    }
 }
