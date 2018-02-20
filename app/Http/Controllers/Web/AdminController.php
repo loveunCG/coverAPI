@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Admin;
 
 class AdminController extends Controller
@@ -13,37 +15,36 @@ class AdminController extends Controller
     {
         $adminData = Admin::all();
         $i = 1;
-        $agent_list = [];
+        $admin_list = [];
         if (count($adminData) > 0) {
-            foreach ($adminData as $agent) {
-                if ($agent->admin_level == 1) {
+            foreach ($adminData as $admin) {
+                if ($admin->admin_level == 1) {
                     continue;
                 }
-                $agent_id = '<input type="hidden" class="adminId" value="' . $agent->id . '">';
-                if ($agent->admin_level == 2) {
-                    $agent_level = '<button type="button" class="btn bg-info waves-effect">superAdmin</button>';
-                } elseif ($agent->admin_level == 3) {
-                    $agent_level = '<button type="button" class="btn bg-info waves-effect">admin</button>';
+                $admin_id = '<input type="hidden" class="adminId" value="' . $admin->id . '">';
+                if ($admin->admin_level == 1) {
+                    $admin_level = '<button type="button" class="btn btn-info-alt waves-effect">Super Admin</button>';
+                } elseif ($admin->admin_level == 2) {
+                    $admin_level = '<button type="button" class="btn btn-primary-alt waves-effect">job manager</button>';
                 } else {
-                    $agent_level = '<button type="button" class="btn bg-info waves-effect">admin1</button>';
+                    $admin_level = '<button type="button" class="btn btn-inverse-alt waves-effect">user manager</button>';
                 }
-                if ($agent->usr_status==1) {
+                if ($admin->usr_status==1) {
                     $adminStatus = '<a href="#" class="btn btn-success"><i class="fa fa-circle"></i></a>';
                 } else {
                     $adminStatus = '<a href="#" disabled class="btn btn-success"><i class="fa fa-circle-o"></i></a>';
                 }
-
-                $agent_list['data'][] = array(
-                    $i++ . $agent_id,
-                    $agent->name,
-                    $agent->email,
-                    $agent->created_at,
-                    $agent_level,
+                $admin_list['data'][] = array(
+                    $i++ . $admin_id,
+                    $admin->name,
+                    $admin->email,
+                    $admin_level,
+                    $admin->created_at->format("Y-m-d h:i:s"),
                     $adminStatus
                 );
             }
         } else {
-            $agent_list['data'][] = array(
+            $admin_list['data'][] = array(
                 '',
                 '',
                 '',
@@ -55,7 +56,7 @@ class AdminController extends Controller
                 ''
             );
         }
-        return response()->json($agent_list);
+        return response()->json($admin_list);
     }
 
     public function getAdminInfo($adminId = null)
@@ -86,17 +87,30 @@ class AdminController extends Controller
 
     public function createAdmin(Request $request)
     {
-        $agent = array(
-          'email'=>$request->input('email'),
-          'password'=>bcrypt($request->input('password')),
-          'admin_level'=>$request->input('admin_level'),
-          'name'=>$request->input('name'),
-          'usr_status'=>1
-        );
-
-        Admin::create($agent);
-
-        return response()->json(array('status'=>'success'));
+        $validator = Validator::make($request->all(), [
+                  'email' => 'required|string|email|max:255|unique:admins',
+                  'password' => 'required',
+                  'name' => 'required|string|max:255',
+                  'admin_level' => 'required'
+      ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
+        }
+        try {
+            $admin = array(
+              'email'=>$request->email,
+              'password'=>bcrypt($request->password),
+              'admin_level'=>$request->admin_level,
+              'name'=>$request->name,
+              'devicename'=>'chrome',
+              'usertype' => 'admin',
+              'usr_status' => 1
+            );
+            Admin::create($admin);
+            return response()->json(['message' => 'Create admin successfully!', 'data' => null, 'response_code' => 1], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Can not create admin account!', 'data' => $e, 'response_code' => 0], 200);
+        }
     }
 
     public function updateAdmin(Request $request)

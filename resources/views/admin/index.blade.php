@@ -88,9 +88,9 @@
                     <label class="col-md-3 control-label">Admin Role</label>
                     <div class="col-md-9">
                         <select name = "admin_level" class="form-control">
-                            <option value="1">Alaska</option>
-                            <option value="2">Lorem ipsum dolor.</option>
-                            <option value="3">Amet, impedit aperiam?</option>
+                            <option value="1">super admin</option>
+                            <option value="2">job manager</option>
+                            <option value="3">user manager</option>
                         </select>
                     </div>
                 </div>
@@ -133,9 +133,9 @@
                     <label class="col-md-3 control-label">Admin Role</label>
                     <div class="col-md-9">
                         <select name = "admin_level" id="admin_level" class="form-control">
-                            <option value="1">Alaska</option>
-                            <option value="2">Lorem ipsum dolor.</option>
-                            <option value="3">Amet, impedit aperiam?</option>
+                            <option value="1">Super admin</option>
+                            <option value="2">job manager</option>
+                            <option value="3">user manager</option>
                         </select>
                     </div>
                 </div>
@@ -158,10 +158,7 @@
     <input type="hidden" name="adminUpdateID" id="admin_updateID">
 </form>
 
-<form id="deleteForm">
-    {{ csrf_field() }}
-    <input type="hidden" name="adminUpdateID" id="adminDeleteId">
-</form>
+
 
 @endsection @section('javascript')
 <script>
@@ -529,10 +526,11 @@
             "method": "POST"
         };
         $.ajax(settings).done(function (response) {
-            if (response.status == 'success') {
+            console.log(response);
+
                 $.alert({
                     title: 'Ok!',
-                    content: 'Create successfully!',
+                    content: response.message,
                     columnClass: 'small',
                     buttons: {
                         ok: function () {
@@ -543,7 +541,7 @@
                         }
                     }
                 });
-            }
+
         });
     }
 
@@ -612,7 +610,7 @@
             "url": "{{url('adminMg/duplicationEmail')}}",
             "dataType": "json",
             "data": sendData,
-            "method": "POST"
+            "method": "get"
         };
 
         $.ajax(settings).done(function (response) {
@@ -638,11 +636,11 @@
 
     function resetButton(){
 
-        $("#editAdminBtn").removeAttr("disabled");
-        $("#activeAdminBtn").removeAttr("disabled");
-        $("#stopAdminBtn").removeAttr("disabled");
-        $("#ResetPassword").removeAttr("disabled");
-        $("#removeAdminBtn").removeAttr("disabled");
+        $("#editAdminBtn").attr("disabled", "true");
+        $("#activeAdminBtn").attr("disabled", "true");
+        $("#stopAdminBtn").attr("disabled", "true");
+        $("#ResetPassword").attr("disabled", "true");
+        $("#removeAdminBtn").attr("disabled", "true");
 
     }
 

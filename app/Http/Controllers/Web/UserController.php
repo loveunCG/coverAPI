@@ -35,14 +35,12 @@ class UserController extends Controller
                 $agentData->address,
                 $agentData->postcode,
                 $agentData->state,
-                $agentData->country,
                 $agentData->devicename,
                 $agentData->longitude,
                 $agentData->latitude,
                 $isVerified,
                 $agent_status,
-                $agentData->created_at,
-                $agentData->status,
+                $agentData->created_at->format("Y-m-d h:i:s"),
             );
             }
         } else {
@@ -154,6 +152,7 @@ class UserController extends Controller
                     $isVerified = '<a href="#" class="btn disabled btn-info-alt"><i class="ti ti-info-alt"></i></a>';
                 }
 
+
                 $agent_list['data'][] = array(
                     $i++ . $agent_id,
                     $customerData->username,
@@ -162,14 +161,12 @@ class UserController extends Controller
                     $customerData->address,
                     $customerData->postcode,
                     $customerData->state,
-                    $customerData->country,
                     $customerData->devicename,
                     $customerData->longitude,
                     $customerData->latitude,
                     $isVerified,
                     $customer_stauts,
-                    $customerData->created_at,
-                    $customerData->status,
+                    $customerData->created_at->format("Y-m-d h:i:s"),
                 );
             }
         } else {

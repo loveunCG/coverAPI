@@ -40,4 +40,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(QuotationModel::class, 'agent_id');
     }
+
+    public function document()
+    {
+        return $this->hasMany(DocumentsModel::class, 'user_id');
+    }
 }

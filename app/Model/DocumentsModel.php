@@ -12,7 +12,7 @@ class DocumentsModel extends Model
     protected $fillable=['user_id','job_id','document'];
     public function customer()
     {
-        return  $this->belongsTo(User::class);
+        return  $this->belongsTo(User::class, 'user_id');
     }
     public function job()
     {

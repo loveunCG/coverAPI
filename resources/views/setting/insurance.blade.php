@@ -32,6 +32,7 @@
                                             <th>No</th>
                                             <th>Insurance Name</th>
                                             <th>Insurance Comment</th>
+                                            <th>Add Time</th>
                                         </tr>
                                         </thead>
                                     </table>

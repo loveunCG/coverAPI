@@ -8,6 +8,7 @@ use App\Model\JobsModel;
 use App\Model\InsuranceModel;
 use App\Model\AssignJob;
 use App\Model\QuotationModel;
+use App\Model\DocumentsModel;
 use App\User;
 
 class JobsController extends Controller
@@ -61,13 +62,13 @@ class JobsController extends Controller
 
     public function removeJob(Request $request)
     {
-        $job_id = $request->job_id;
-        if ($job_id) {
+        if ($request->has('job_id')) {
+            $job_id = $request->job_id;
             try {
                 JobsModel::findOrFail($job_id)->delete();
                 return response()->json(['message' => 'Delete successfully!', 'data' => null, 'response_code' => 1], 200);
             } catch (\Exception $e) {
-                return response()->json(['message' => 'Delete successfully!', 'data' => null, 'response_code' => 0], 500);
+                return response()->json(['message' => 'Delete failed!', 'data' => null, 'response_code' => 0], 500);
             }
         } else {
             return response()->json(['message' => 'Please insert Job ID', 'data' => null, 'response_code' => 0], 200);
@@ -129,5 +130,89 @@ class JobsController extends Controller
             ];
         }
         return response()->json($send_data);
+    }
+
+    public function getDocumentList(Request $request)
+    {
+        $send_document_list = [];
+        if ($request->has('job_id')) {
+            $document_lists = DocumentsModel::where('job_id', $request->job_id)->get();
+        } else {
+            $document_lists = DocumentsModel::all();
+        }
+        if (count($document_lists) > 0) {
+            $index = 1;
+            try {
+                foreach ($document_lists as $document) {
+                    $send_document_list['data'][] = [
+                    $index++,
+                    $document->customer->username,
+                    $document->document
+                  ];
+                }
+            } catch (\Exception $e) {
+                $send_document_list['data'][0] =[
+                '',
+                '',
+                '',
+                '',
+              ];
+            }
+        } else {
+            $send_document_list['data'][0] =[
+            '',
+            '',
+            '',
+            '',
+          ];
+        }
+        return response()->json($send_document_list);
+    }
+
+    public function getAssignedJobList(Request $request)
+    {
+        $send_assignedList = [];
+        if ($request->has('job_id')) {
+            $assignLists = AssignJob::where('job_id', $request->job_id)->get();
+        } else {
+            $assignLists = AssignJob::all();
+        }
+        if (count($assignLists) > 0) {
+            $index = 1;
+            try {
+                foreach ($assignLists as $job) {
+                    if ($job->jobstatus == 1) {
+                        $status = '<a href="#" class="btn btn-primary-alt">Accepted</a>';
+                    } elseif ($job->jobstatus == 2) {
+                        $status = '<a href="#" class="btn btn-primary-alt">Rejected</a>';
+                    } elseif ($job->jobstatus == 3) {
+                        $status = '<a href="#" class="btn btn-primary-alt">Completed</a>';
+                    } else {
+                        $status = '<a href="#" class="btn btn-primary-alt">Assigning</a>';
+                    }
+                    $send_assignedList['data'][] = [
+                      $index++,
+                      User::findOrFail($job->customer_id)->username,
+                      User::findOrFail($job->agent_id)->username,
+                      $status
+                    ];
+                }
+            } catch (\Exception $e) {
+                $send_assignedList['data'][0] =[
+                  '',
+                  '',
+                  '',
+                  '',
+                ];
+            }
+        } else {
+            $send_assignedList['data'][0] =[
+              '',
+              '',
+              '',
+              '',
+            ];
+        }
+        return response()->json($send_assignedList);
     }
 }
