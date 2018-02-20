@@ -18,7 +18,8 @@
                 <ul class="acc-menu">
                     <li>
                         <a href="javascript:;">
-                            <i class="fa fa-user"></i>                            <span>Admin manage</span>
+                            <i class="fa fa-user"></i>
+                            <span>Admin manage</span>
                         </a>
                         <ul class="acc-menu">
                             <li>
@@ -37,13 +38,13 @@
                         <ul class="acc-menu">
                             <li>
                                 <a href="{{url('agentMg')}}">
-                                    <i class="fa fa-group"></i>
+                                    <i class="fa fa-user"></i>
                                     <span>&nbsp;Agent</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{url('custom')}}">
-                                    <i class="fa fa-globe"></i>
+                                    <i class="fa fa-user"></i>
                                     <span>&nbsp;Customer</span>
                                 </a>
                             </li>

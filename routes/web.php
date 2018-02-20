@@ -11,12 +11,12 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'adminMg', 'as' => 'ad
     Route::get('/', 'HomeController@adminMg');
     Route::get('/getAdminTableInfo', 'Web\AdminController@getAdminTableInfo');
     Route::get('/getAdminInfo/{id?}', 'Web\AdminController@getAdminInfo');
-    Route::post('/create/{id?}', 'Web\AdminController@createAdmin');
+    Route::post('/create', 'Web\AdminController@createAdmin');
     Route::post('/update', 'Web\AdminController@updateAdmin');
     Route::post('/activate', 'Web\AdminController@activate');
     Route::post('/resetPassword', 'Web\AdminController@resetPassword');
     Route::post('/removeAdmin', 'Web\AdminController@removeAdmin');
-    Route::post('/duplicationEmail', 'Web\AdminController@duplicationEmail');
+    Route::get('/duplicationEmail', 'Web\AdminController@duplicationEmail');
     Route::get('/MessageMg/{id?}', 'userMgGate@MessageMg');
 });
 
@@ -42,7 +42,6 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
     Route::post('/resetPassword', 'Web\UserController@resetPassword');
     Route::post('/removeCustomter/', 'Web\UserController@removeCustomer');
 });
-
 // setting module
 Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'setting.'], function () {
     Route::get('/insurance', 'HomeController@insurance');
@@ -50,11 +49,13 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'se
     Route::get('/getInsurance/{id?}', 'Web\SettingController@getInsurance');
     Route::post('/addInsurance', 'Web\SettingController@addInsurance');
 });
-
+// Job CMS module
 Route::group(['middleware' => [], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
     Route::get('/', 'HomeController@jobsMg');
     Route::get('/getJobListData', 'Web\JobsController@getJobList');
     Route::get('/getjobdetail/{id?}', 'Web\JobsController@JobDetailView');
     Route::get('/getQuotationList/{id?}', 'Web\JobsController@getQuotationList');
-    Route::post('/addInsurance', 'Web\SettingController@addInsurance');
+    Route::get('/getDocumentList/{id?}', 'Web\JobsController@getDocumentList');
+    Route::get('/getAssignedJobList/{id?}', 'Web\JobsController@getAssignedJobList');
+    Route::post('/removeJob', 'Web\JobsController@removeJob');
 });

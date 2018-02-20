@@ -40,14 +40,12 @@
                                             <th>address</th>
                                             <th>post code</th>
                                             <th>state</th>
-                                            <th>country</th>
                                             <th>deviceName</th>
                                             <th>longitude</th>
                                             <th>latitude</th>
                                             <th>isVerified</th>
                                             <th>isAvailable</th>
                                             <th>Add Time</th>
-                                            <th>Customer Status</th>
                                         </tr>
                                         </thead>
                                     </table>

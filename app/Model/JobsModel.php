@@ -13,7 +13,7 @@ class JobsModel extends Model
        'indicative_sum','address','postcode','state','country','remarks','quotation_price', 'expired_date'];
     public function documentJob()
     {
-        return $this->hasMany(DocumentsModel::class);
+        return $this->hasMany(DocumentsModel::class, 'job_id');
     }
     public function users()
     {

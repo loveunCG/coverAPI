@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\InsuranceModel;
 
-
 class SettingController extends Controller
 {
     public function getInsuranceTable(Request $request)
@@ -20,7 +19,8 @@ class SettingController extends Controller
                 $insurance_list['data'][] = array(
                     $i++ . $insurance_id,
                     $data->insurance_name,
-                    $data->insur_comment
+                    $data->insur_comment,
+                    $data->created_at->format("Y-m-d h:i:s")
                 );
             }
         } else {
