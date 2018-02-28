@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
     Route::post('/removeCustomter/', 'Web\UserController@removeCustomer');
 });
 // setting module
+
 Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'setting.'], function () {
     Route::get('/insurance', 'HomeController@insurance');
     Route::get('/getInsuranceTableInfo', 'Web\SettingController@getInsuranceTable');
@@ -50,6 +51,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'se
     Route::post('/addInsurance', 'Web\SettingController@addInsurance');
 });
 // Job CMS module
+
 Route::group(['middleware' => [], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
     Route::get('/', 'HomeController@jobsMg');
     Route::get('/getJobListData', 'Web\JobsController@getJobList');

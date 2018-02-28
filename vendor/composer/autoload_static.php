@@ -414,6 +414,7 @@ class ComposerStaticInit7da61b25ece405c3e463346d6f1545f4
         'App\\Http\\Controllers\\Web\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/AdminController.php',
         'App\\Http\\Controllers\\Web\\SettingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/SettingController.php',
         'App\\Http\\Controllers\\Web\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/UserController.php',
+        'App\\Http\\Controllers\\web\\JobsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/JobsController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\ApiAuthToken' => __DIR__ . '/../..' . '/app/Http/Middleware/ApiAuthToken.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',

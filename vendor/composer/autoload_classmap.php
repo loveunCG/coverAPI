@@ -37,6 +37,7 @@ return array(
     'App\\Http\\Controllers\\Web\\AdminController' => $baseDir . '/app/Http/Controllers/Web/AdminController.php',
     'App\\Http\\Controllers\\Web\\SettingController' => $baseDir . '/app/Http/Controllers/Web/SettingController.php',
     'App\\Http\\Controllers\\Web\\UserController' => $baseDir . '/app/Http/Controllers/Web/UserController.php',
+    'App\\Http\\Controllers\\web\\JobsController' => $baseDir . '/app/Http/Controllers/Web/JobsController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\ApiAuthToken' => $baseDir . '/app/Http/Middleware/ApiAuthToken.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',

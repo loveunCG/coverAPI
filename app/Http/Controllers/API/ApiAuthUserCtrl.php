@@ -49,11 +49,11 @@ class ApiAuthUserCtrl extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+                return response()->json(['message' => 'invalid_credentials', 'data' => [], 'response_code' => 0], 200);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['error' => 'could_not_create_token'], 500);
+            return response()->json(['message' => 'could_not_create_token', 'data' => [], 'response_code' => 0], 500);
         }
         if ($request->has(['email', 'devicetoken'])) {
             $user = User::where(['email' => $request->email])->first();
