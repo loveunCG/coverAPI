@@ -50,11 +50,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'se
     Route::get('/getInsurance/{id?}', 'Web\SettingController@getInsurance');
     Route::post('/addInsurance', 'Web\SettingController@addInsurance');
 });
-// Job CMS module
-<<<<<<< HEAD
 
-=======
->>>>>>> e1cd872238f50e9b6d7594345626d73cd28facb2
 Route::group(['middleware' => [], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
     Route::get('/', 'HomeController@jobsMg');
     Route::get('/getJobListData', 'Web\JobsController@getJobList');
