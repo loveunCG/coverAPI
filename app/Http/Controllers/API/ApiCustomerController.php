@@ -138,7 +138,8 @@ class ApiCustomerController extends Controller
                 $jobData = array();
                 for ($i = 0; $i < count($userJobs); $i++) {
                     $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
-                    $insuranceData = InsuranceModel::where(['insur_id' => $userJobs[$i]['insurance_type']])->first();
+                    $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
+                    $insuranceData->companys;
                     $userJobs[$i]['documents'] = $documents;
                     $data = ["jobs" => $userJobs[$i]];
                     array_push($jobData, $data);
@@ -157,7 +158,8 @@ class ApiCustomerController extends Controller
                 $jobData = array();
                 for ($i = 0; $i < count($userJobs); $i++) {
                     $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
-                    $insuranceData = InsuranceModel::where(['insur_id' => $userJobs[$i]['insurance_type']])->first();
+                    $insuranceData = InsuranceModel::finfOrFail($userJobs[$i]['insurance_type']);
+                    $insuranceData->companys;
                     $userJobs[$i]['documents'] = $documents;
                     $data = ["jobs" => $userJobs[$i]];
                     array_push($jobData, $data);
@@ -180,9 +182,10 @@ class ApiCustomerController extends Controller
                 $userJobs = JobsModel::where(['id' => $request->jobId])->first();
                 $jobData = array();
                 $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
-                $insuranceData = InsuranceModel::where(['insur_id' => $userJobs->insurance_type])->first();
+                $insuranceData = InsuranceModel::finfOrFail($userJobs[$i]['insurance_type']);
+                $insuranceData->companys;
                 $userJobs['documents'] = $documents;
-                $userJobs['insurance_id'] = $insuranceData->insur_id;
+                $userJobs['insurance_id'] = $insuranceData->id;
                 $userJobs['insurance_name'] = $insuranceData->insurance_name;
                 $data = [
                   "jobs" => $userJobs,
@@ -205,8 +208,9 @@ class ApiCustomerController extends Controller
     {
         if (!empty($request->insurId)) {
             try {
-                $InsuranceData = InsuranceModel::where(['insur_id' => $request->insurId])->first();
-                $send_data = array('insurance_name'=>$InsuranceData->insurance_name,'id'=>$InsuranceData->insur_id );
+                $insuranceData = InsuranceModel::finfOrFail($userJobs[$i]['insurance_type']);
+                $insuranceData->companys;
+                $send_data = array('insurance_name'=>$InsuranceData->insurance_name,'id'=>$InsuranceData->id );
 
                 if (count($InsuranceData) > 0) {
                     return response()->json(['message' => 'insurance', 'data' => $send_data, 'response_code' => 1], 200);
@@ -222,7 +226,8 @@ class ApiCustomerController extends Controller
             foreach ($InsuranceDatas as $InsuranceData) {
                 $send_data[] = array(
                   'insurance_name'=>$InsuranceData->insurance_name,
-                  'id'=>$InsuranceData->insur_id
+                  'id'=>$InsuranceData->id,
+                  'companys'=>$InsuranceData->companys
               );
             }
 

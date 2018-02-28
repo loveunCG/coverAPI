@@ -75,6 +75,11 @@
                                     <i class="fa fa-square"></i>
                                     <span>&nbsp;Add Insurance Type</span>
                                 </a>
+
+                                <a href="{{url('setting/company')}}">
+                                    <i class="fa fa-indent"></i>
+                                    <span>&nbsp;Company Info</span>
+                                </a>
                             </li>
                         </ul>
                     </li>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Model\InsuranceModel;
 
 class HomeController extends Controller
 {
@@ -17,8 +18,6 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
-
-
     }
 
     /**
@@ -52,10 +51,17 @@ class HomeController extends Controller
         return view('setting.insurance');
     }
 
+    public function company()
+    {
+        $insurances = InsuranceModel::all();
+        return view('setting.company', compact('insurances'));
+    }
+
     /**
-     * 
+     *
      */
-    public function jobsMg(){
+    public function jobsMg()
+    {
         return view('jobs.index');
     }
 }

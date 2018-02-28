@@ -46,9 +46,13 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
 
 Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'setting.'], function () {
     Route::get('/insurance', 'HomeController@insurance');
+    Route::get('/company', 'HomeController@company');
     Route::get('/getInsuranceTableInfo', 'Web\SettingController@getInsuranceTable');
+    Route::get('/getCompanyTableInfo', 'Web\SettingController@getCompanyTableInfo');
     Route::get('/getInsurance/{id?}', 'Web\SettingController@getInsurance');
+    Route::get('/getCompany/{id?}', 'Web\SettingController@getCompany');
     Route::post('/addInsurance', 'Web\SettingController@addInsurance');
+    Route::post('/addCompanyInfo', 'Web\SettingController@addCompany');
 });
 
 Route::group(['middleware' => [], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
