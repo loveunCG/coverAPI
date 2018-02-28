@@ -72,6 +72,7 @@ class SettingController extends Controller
         if (count($companys) > 0) {
             foreach ($companys as $data) {
                 $company_id = '<input type="hidden" class="company_id" value="' . $data->id . '">';
+                
                 $company_list['data'][] = array(
                     $i++ . $company_id,
                     $data->company_name,
