@@ -168,7 +168,7 @@ class ApiAuthUserCtrl extends Controller
         $country = ($request->country != null) ? $request->country : $user->country;
         $password = ($request->country != null) ? $request->password  : $user->password;
         if ($request->hasFile('photo') > 0) {
-            $photo = ($request->hasFile('photo') != null) ? url('/') . '/public/uploads/' . Storage::disk('public_uploads')->put('/', $request->photo) : $user->image;
+            $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
             $data = [
                 "username" => $username,
                 "email" => $email,
