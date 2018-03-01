@@ -166,6 +166,7 @@ class ApiAuthUserCtrl extends Controller
         $postcode = ($request->postcode != null) ? $request->postcode : $user->postcode;
         $state = ($request->state != null) ? $request->state : $user->state;
         $country = ($request->country != null) ? $request->country : $user->country;
+        $password = ($request->country != null) ? $request->password  : $user->password;
         if ($request->hasFile('photo') > 0) {
             $photo = ($request->hasFile('photo') != null) ? url('/') . '/public/uploads/' . Storage::disk('public_uploads')->put('/', $request->photo) : $user->image;
             $data = [
