@@ -16,29 +16,51 @@ class ApiCustomerController extends Controller
 {
     public function uploadFile(Request $request)
     {
-        $document = new DocumentsModel();
-        $document->document = url('/') . '/public/uploads/' . Storage::disk('public_uploads')->put('/', $request->document);
-        $docName = explode('/', $document->document);
-        $document->fileName = $docName[6];
-        // $result = $document->save();
-        return response()->json(['message' => 'success', 'data' => $document->fileName, 'response_code' => 1], 200);
+        $validator = Validator::make($request->all(), [
+                  'document' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
+        }
+        try {
+            $url = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->document)));
+            return response()->json(['message' => 'success', 'data' => $url, 'response_code' => 1], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'upload failed', 'data' => $e, 'response_code' => 0], 500);
+        }
     }
 
     public function addDocuments(Request $request)
     {
         // uploading multiple documents
+
+        $validator = Validator::make($request->all(), [
+                  'document' => 'required',
+                  'userId' => 'required',
+                  'jobId' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
+        }
         $documentArr = array();
         $arrLength = sizeof($request->document);
         if ($arrLength == 0) {
             return response()->json(['message' => 'No file uploaded', 'data' => [], 'response_code' => 0], 200);
         }
-        for ($i = 0; $i < count($request->document); $i++) {
-            $document = new DocumentsModel();
-            $document->document = url('/') . '/public/documents/' . Storage::disk('document_uploads')->put('/', $request->document[$i]);
-            $docName = explode('/', $document->document);
-            $document->fileName = $docName[6];
-            // $result = $document->save();
-            array_push($documentArr, $docName[6]);
+        try {
+            return response()->json($request->document);
+          
+            for ($i = 0; $i < count($request->document); $i++) {
+                $document->document = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/uploads/documents', $request->document[$i])));
+                $docName = explode('/', $document->document);
+                $document->fileName = $docName[7];
+                $document->user_id = $request->userId;
+                $document->job_id = $request->jobId;
+                $result = $document->save();
+                array_push($documentArr, $docName[7]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'upload failed', 'data' => $e, 'response_code' => 0], 500);
         }
         return response()->json(['message' => 'success', 'data' => $documentArr, 'response_code' => 1], 200);
     }
