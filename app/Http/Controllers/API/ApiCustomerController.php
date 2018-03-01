@@ -17,13 +17,13 @@ class ApiCustomerController extends Controller
     public function uploadFile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-                  'document' => 'required'
+                  'photo' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
         try {
-            $url = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->document)));
+            $url = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo)));
             return response()->json(['message' => 'success', 'data' => $url, 'response_code' => 1], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'upload failed', 'data' => $e, 'response_code' => 0], 500);
@@ -49,7 +49,7 @@ class ApiCustomerController extends Controller
         }
         try {
             return response()->json($request->document);
-          
+
             for ($i = 0; $i < count($request->document); $i++) {
                 $document->document = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/uploads/documents', $request->document[$i])));
                 $docName = explode('/', $document->document);
