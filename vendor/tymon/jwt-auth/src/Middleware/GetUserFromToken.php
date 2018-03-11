@@ -39,8 +39,8 @@ class GetUserFromToken extends BaseMiddleware
 
             // return $this->respond('tymon.jwt.invalid', 'token_invalid', $e->getStatusCode(), [$e]);
         }
-        if (! $user) {
-            return response()->json(['message' => 'user_not_found', 'data' => $e, 'response_code' => 0], 200);
+        if (!$user) {
+            return response()->json(['message' => 'user_not_found', 'data' => [], 'response_code' => 0], 200);
 
             // return $this->respond('tymon.jwt.user_not_found', 'user_not_found', 404);
         }

@@ -21,6 +21,7 @@ Route::post('user/resetPassword', 'Auth\ResetPasswordController@resetPassword');
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::post('update', 'API\ApiAuthUserCtrl@update');
+    Route::post('referral', 'API\ApiAuthUserCtrl@getReferral');
 });
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {

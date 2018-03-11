@@ -139,8 +139,8 @@ class ApiAuthUserCtrl extends Controller
         }
 
         try {
-            $twilio = new Twilio('ACcde22840e5d0241617cf7cffc1b0c7d8', 'a02b38342cfa6c23225bb6a5e7e65909', '+12013895496', false);
-            $twilio->message($request->phoneno, 'Verify code for EASYCOVER security is : '.$message.' please check this. Thank you!');
+            $twilio = new Twilio('AC4c86492ba759fa6484c7c9e91e11af8d', '21fd34588b48408a73701b9bf1d9ea7b', '+19042950814', false);
+            $twilio->message("$request->phoneno", 'Verify code for EASYCOVER security is : '.$message.' please check this. Thank you!');
             // Twilio::message($request->phoneno, $message);
             $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
             if (empty($checkPhone)) {
@@ -230,6 +230,18 @@ class ApiAuthUserCtrl extends Controller
             }
         } else {
             return response()->json(['message' => 'There is no phone number or verify number', 'data' => [], 'response_code' => 0], 200);
+        }
+    }
+
+    public function getReferral()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $where = array('user_id' => $user->id);
+        try {
+            $referralCode = ReferralCodeModel::where($where)->first();
+            return response()->json(['message' => 'get referal Code', 'data' => ['referral_code'=>$referralCode->rederral_code], 'response_code' => 0], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'getting is failed', 'data' => [], 'response_code' => 0], 200);
         }
     }
 }
