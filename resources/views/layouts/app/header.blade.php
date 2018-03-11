@@ -47,90 +47,6 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="media notification-message">
-                            <a href="#">
-                                <div class="media-left">
-                                    <img class="img-circle avatar" src="http://placehold.it/300&text=Placeholder" alt="" />
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">
-                                        <strong>Frend Pratt</strong>
-                                        <span class="text-gray">‒ I will start with the ...</span>
-                                    </h4>
-                                    <span class="notification-time">40 mins ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-message">
-                            <a href="#">
-                                <div class="media-left">
-                                    <img class="img-circle avatar" src="http://placehold.it/300&text=Placeholder" alt="" />
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">
-                                        <strong>Cynthia Hines</strong>
-                                        <span class="text-gray">‒ Interior bits are ...</span>
-                                    </h4>
-                                    <span class="notification-time">6 hours ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-message">
-                            <a href="#">
-                                <div class="media-left">
-                                    <img class="img-circle avatar" src="http://placehold.it/300&text=Placeholder" alt="" />
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">
-                                        <strong>Robin Horton</strong>
-                                        <span class="text-gray">‒ Are you even ...</span>
-                                    </h4>
-                                    <span class="notification-time">8 days ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-message">
-                            <a href="#">
-                                <div class="media-left">
-                                    <img class="img-circle avatar" src="http://placehold.it/300&text=Placeholder" alt="" />
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">
-                                        <strong>Amanda Torrez</strong>
-                                        <span class="text-gray">‒ The message is ...</span>
-                                    </h4>
-                                    <span class="notification-time">16 hours ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-message">
-                            <a href="#">
-                                <div class="media-left">
-                                    <img class="img-circle avatar" src="http://placehold.it/300&text=Placeholder" alt="" />
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">
-                                        <strong>Khan Farhan</strong>
-                                        <span class="text-gray">‒ Expected the stuff ...</span>
-                                    </h4>
-                                    <span class="notification-time">2 days ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-message">
-                            <a href="#">
-                                <div class="media-left">
-                                    <img class="img-circle avatar" src="http://placehold.it/300&text=Placeholder" alt="" />
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">
-                                        <strong>Will Whedon</strong>
-                                        <span class="text-gray">‒ The movie of this ...</span>
-                                    </h4>
-                                    <span class="notification-time">4 days ago</span>
-                                </div>
-                            </a>
-                        </li>
                     </ul>
                 </div>
                 <div class="topnav-dropdown-footer">
@@ -154,65 +70,13 @@
                         <li class="media notification-success">
                             <a href="#">
                                 <div class="media-left">
-										<span class="notification-icon">
-											<i class="ti ti-check"></i>
-										</span>
+              										<span class="notification-icon">
+              											<i class="ti ti-check"></i>
+              										</span>
                                 </div>
                                 <div class="media-body">
                                     <h4 class="notification-heading">Update 1.0.4 successfully pushed</h4>
                                     <span class="notification-time">8 mins ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-info">
-                            <a href="#">
-                                <div class="media-left">
-										<span class="notification-icon">
-											<i class="ti ti-check"></i>
-										</span>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">Update 1.0.3 successfully pushed</h4>
-                                    <span class="notification-time">24 mins ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-teal">
-                            <a href="#">
-                                <div class="media-left">
-										<span class="notification-icon">
-											<i class="ti ti-check"></i>
-										</span>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">Update 1.0.2 successfully pushed</h4>
-                                    <span class="notification-time">16 hours ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-indigo">
-                            <a href="#">
-                                <div class="media-left">
-										<span class="notification-icon">
-											<i class="ti ti-check"></i>
-										</span>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">Update 1.0.1 successfully pushed</h4>
-                                    <span class="notification-time">2 days ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="media notification-danger">
-                            <a href="#">
-                                <div class="media-left">
-										<span class="notification-icon">
-											<i class="ti ti-arrow-up"></i>
-										</span>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="notification-heading">Initial Release 1.0</h4>
-                                    <span class="notification-time">4 days ago</span>
                                 </div>
                             </a>
                         </li>
@@ -229,22 +93,15 @@
             </a>
             <ul class="dropdown-menu userinfo arrow">
                 <li>
-                    <a href="#/">
-                        <i class="ti ti-user"></i>
-                        <span>Profile</span>
-                        <span class="badge badge-info pull-right">80%</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#/">
+                    <a href="#/" id="account_profile_open">
                         <i class="ti ti-panel"></i>
                         <span>Account</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#/">
-                        <i class="ti ti-settings"></i>
-                        <span>Settings</span>
+                    <a href="#/" id="open_reset_password">
+                        <i class="fa  fa-key"></i>
+                        <span>Reset Password</span>
                     </a>
                 </li>
                 <li>
@@ -259,4 +116,60 @@
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         {{ csrf_field() }}
     </form>
+    <div id="Reset_Password" data-iziModal-title="Reset Password"  data-iziModal-icon="icon-home">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="panel-ctrls" data-actions-container=""></div>
+            </div>
+            <div class="panel-body">
+                <form id="reset_password_form" class="form-horizontal row-border">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Old Password</label>
+                        <div class="col-md-9">
+                            <input type="password" name="old_password" id="old_password" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">New Password</label>
+                        <div class="col-md-9">
+                            <input type="password" name="new_password"  class="form-control">
+                        </div>
+                        {{ csrf_field() }}
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Confirm Password</label>
+                        <div class="col-md-9">
+                            <input type="password" name="new_password_confirmation" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6">
+                        <button class="btn-primary btn" type="button" id="reset_password_btn">Reset Password</button>
+                        <button class="btn-default btn" data-izimodal-close="">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  <div id="account_profile" data-iziModal-title="Account Info"  data-iziModal-icon="icon-home">
+    <div class="panel panel-profile">
+			  <div class="panel-body">
+			    <img src="http://placehold.it/300&amp;text=Placeholder" class="img-circle">
+			    <div class="name" id="admin_profile_name"></div>
+			    <div class="info" id = "admin_profile_email" ></div>
+			    <ul class="list-inline text-center">
+			    	<li><a href="#" class="profile-facebook-icon"><i class="ti ti-facebook"></i></a></li>
+			    	<li><a href="#" class="profile-twitter-icon"><i class="ti ti-twitter"></i></a></li>
+			    	<li><a href="#" class="profile-dribbble-icon"><i class="ti ti-dribbble"></i></a></li>
+			    </ul>
+			  </div>
+			</div>
+  </div>
+
+
 </header>

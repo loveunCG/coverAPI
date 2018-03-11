@@ -30,6 +30,7 @@
 <script type="text/javascript" src="{{asset('public/plugins/datatables/jquery.dataTables.js')}}"></script>
 <script type="text/javascript" src="{{asset('public/plugins/datatables/dataTables.bootstrap.js')}}"></script>
 <script>
+    let reset_password_modal, account_profile;
     $('#signOutBtn').click(function () {
         $.confirm({
             title: 'Information?',
@@ -56,7 +57,66 @@
 
             }
         });
+    });
 
-    })
+    $(function(){
+        reset_password_modal = $("#Reset_Password").iziModal();
+        account_profile = $('#account_profile').iziModal();
+        $('#open_reset_password').click(function(){
+            reset_password_modal.iziModal('open',{ transition: 'fadeInDown'});
+        });
+
+        $('#reset_password_btn').click(function(){
+          var submit_data = $('#reset_password_form').serialize();
+          var setting = {
+            "async": false,
+            "url": '{{url('adminMg/changePassword')}}',
+            "method": "POST",
+            "dataType": "json",
+            "processData": false,
+            "data":submit_data
+          };
+          $.ajax(setting).done(function (response) {
+            console.log(response);
+            var message_title = "warning";
+            if(response.response_code){
+              message_title = "Ok!"
+            }
+            $.alert({
+                title: message_title,
+                content: response.message,
+                columnClass: 'small',
+                buttons: {
+                    ok: function () {
+                        if(response.response_code){
+                          reset_password_modal.iziModal('close');
+                        }
+                        return true;
+                    }
+                }
+            });
+          });
+
+
+        });
+
+        $('#account_profile_open').click(function(){
+            var setting = {
+      				"async": false,
+      				"url": '{{url('adminMg/getauthuser')}}',
+      				"method": "GET",
+      				"dataType": "json",
+      				"processData": false
+      			};
+      			$.ajax(setting).done(function (response) {
+              console.log(response);
+              $('#admin_profile_name').html(response.data.name);
+              $('#admin_profile_email').html(response.data.email);
+              account_profile.iziModal('open');
+            });
+        });
+        $('.panel-profile').css('opacity', '80');
+
+    });
 </script>
 <!-- End loading page level scripts-->

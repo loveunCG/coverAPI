@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class ForgotPasswordController extends Controller
 {
@@ -53,14 +54,18 @@ class ForgotPasswordController extends Controller
     public function sendEmailToken(Request $request)
     {
         $validator = Validator::make($request->all(), ['email' => 'required|email']);
-        if ($validator->fails()) {
+        if (!$validator->fails()) {
             $user = User::where('email', $request->email)->first();
-            $token = $this->generateToken();
-            $user->verifyToken = $token;
-            $user->save();
-            try {
-                Mail::to($user['email'])->send(new VerifyEmail($user));
-            } catch (\Exception $exception) {
+            if ($user) {
+                $token = $this->generateToken();
+                $user->verifyToken = $token;
+                $user->save();
+                try {
+                    Mail::to($user['email'])->send(new VerifyEmail($user));
+                } catch (\Exception $exception) {
+                    return response()->json(['message' => 'Can not send Mail', 'data' =>[], 'response_code' => 0], 500);
+                }
+            } else {
                 return response()->json(['message' => 'Can not send Mail', 'data' =>[], 'response_code' => 0], 500);
             }
         } else {

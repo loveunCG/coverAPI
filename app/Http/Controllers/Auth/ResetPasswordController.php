@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ResetPasswordController extends Controller
 {
@@ -40,25 +41,28 @@ class ResetPasswordController extends Controller
         $this->middleware('guest');
     }
 
-    public function resetPassword(Request $request){
-
-      $validator = Validator::make($request->all(), [
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'password' => 'required|min:6',
         'verifyCode' => 'required'
       ]);
-      if($validator->fails()){
-        return response()->json(['message' => 'please insert correct Email, password, verifyCode', 'data' => [], 'response_code' => 1], 200);
-
-      }
-      $user = User::where('email',$request->email)->first();
-      if(!$user) return response()->json(['message' => 'please insert correct Email', 'data' => [], 'response_code' => 1], 200);
-      if($user->verifyToken!=$request->verifyCode) return response()->json(['message' => 'please insert correct verify code', 'data' => [], 'response_code' => 1], 200);
-      $user->password = Hash::make($request->password);
-      $user->setRememberToken(Str::random(60));
-      $user->save();
-      $credentials = $request->only('email', 'password');
-      $token = JWTAuth::attempt($credentials);
-      return response()->json(['message' => 'Successfully Reset password', 'data' => $user,'token'=>$token, 'response_code' => 1], 200);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'please insert correct Email, password, verifyCode', 'data' => [], 'response_code' => 1], 200);
+        }
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'please insert correct Email', 'data' => [], 'response_code' => 1], 200);
+        }
+        if ($user->verifyToken!=$request->verifyCode) {
+            return response()->json(['message' => 'please insert correct verify code', 'data' => [], 'response_code' => 1], 200);
+        }
+        $user->password = Hash::make($request->password);
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+        $credentials = $request->only('email', 'password');
+        $token = JWTAuth::attempt($credentials);
+        return response()->json(['message' => 'Successfully Reset password', 'data' => $user,'token'=>$token, 'response_code' => 1], 200);
     }
 }

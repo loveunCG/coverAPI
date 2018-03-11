@@ -17,6 +17,8 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'adminMg', 'as' => 'ad
     Route::post('/resetPassword', 'Web\AdminController@resetPassword');
     Route::post('/removeAdmin', 'Web\AdminController@removeAdmin');
     Route::get('/duplicationEmail', 'Web\AdminController@duplicationEmail');
+    Route::get('/getauthuser', 'Web\AdminController@getAuthuserInfo');
+    Route::post('/changePassword', 'Web\AdminController@changePassword');
     Route::get('/MessageMg/{id?}', 'userMgGate@MessageMg');
 });
 

@@ -17,7 +17,7 @@ Route::post('user/login', 'API\ApiAuthUserCtrl@authenticate');
 Route::post('user/sendSMS', 'API\ApiAuthUserCtrl@sendSMS');
 Route::post('user/checkVerfityCode', 'API\ApiAuthUserCtrl@checkPhoneVerify');
 Route::post('user/forgetPassword', 'Auth\ForgotPasswordController@sendEmailToken');
-Route::post('user/resetPassword', 'Autn\ResetPasswordController@resetPassword');
+Route::post('user/resetPassword', 'Auth\ResetPasswordController@resetPassword');
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::post('update', 'API\ApiAuthUserCtrl@update');

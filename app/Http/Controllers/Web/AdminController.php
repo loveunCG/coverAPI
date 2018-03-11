@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Admin;
+use Hash;
 
 class AdminController extends Controller
 {
@@ -147,5 +148,31 @@ class AdminController extends Controller
         $user->delete();
         return response()->json(array('status'=>'success'));
     }
+
+    public function changePassword(Request $request)
+    {
+        $user = Auth::getUser();
+        $validator = Validator::make($request->all(), [
+          'old_password' => 'required',
+          'new_password' => 'required|confirmed',
+          'new_password_confirmation' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
+        }
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->password = bcrypt($request->get('new_password'));
+            $user->save();
+            return response()->json(['message' => 'Reset Password successfully!', 'data' => [], 'response_code' => 1], 200);
+        } else {
+            return response()->json(['message' => 'current password is incorrect!', 'data' => [], 'response_code' => 0], 200);
+        }
+    }
+
+    public function getAuthuserInfo()
+    {
+        return response()->json(['message' => 'success', 'data' => Auth::getUser(), 'response_code' => 1], 200);
+    }
+
     //
 }
