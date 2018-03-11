@@ -252,7 +252,7 @@
           $.confirm({
               title: 'Warring!',
               content: 'Do you want to remove this Job？',
-              theme: 'material',
+              theme: 'bootstrap',
               columnClass: 'small',
               autoClose: 'chancel|10000',
               closeIcon: true,

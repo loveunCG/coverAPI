@@ -35,8 +35,10 @@
         $.confirm({
             title: 'Information?',
             content: 'Are you sure sign out this account?',
-            theme: 'material',
+            theme: 'bootstrap',
+            type: 'red',
             columnClass: 'small',
+            animationBounce: 1.5,
             closeIcon: true,
             typeAnimated: true,
             draggable: true,

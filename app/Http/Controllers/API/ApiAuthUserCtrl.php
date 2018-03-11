@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Model\PhoneVerify;
+use App\Model\ReferralCodeModel;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -91,11 +92,20 @@ class ApiAuthUserCtrl extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Signup is failed', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
-        // if (!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()) {
-        //     return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
-        // }
 
-        $user = $this->create($request->all());
+        if ($request->has('refferalcode')) {
+            $user = $this->create($request->all());
+            $user->update($request->only('refferalcode'));
+        } else {
+            if (!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()) {
+                return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
+            }
+            $user = $this->create($request->all());
+            $referal = new ReferralCodeModel();
+            $referal->user_id = $user->id;
+            $referal->rederral_code = str_random(6);
+            $referal->save();
+        }
         try {
             $credentials = array('email' => $request->email, 'password' =>$request->password);
             $token = JWTAuth::attempt($credentials);

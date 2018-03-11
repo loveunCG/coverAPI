@@ -122,15 +122,19 @@ class UserController extends Controller
 
     public function resetPassword(Request $request)
     {
-        if ($request->password) {
-            $updateData = array('password'=>$request->password);
-            if (User::findOrFail($request->agent_id)->update($updateData)) {
-                return response()->json(array('status'=>true));
+        try {
+            if ($request->password) {
+                $updateData = array('password' => bcrypt($request->password));
+                if (User::findOrFail($request->agent_id)->update($updateData)) {
+                    return response()->json(['message' => 'Successfully!', 'data' => [], 'response_code' => 1], 200);
+                } else {
+                    return response()->json(['message' => 'Failed reset password!', 'data' => [], 'response_code' => 0], 200);
+                }
             } else {
-                return response()->json(array('status'=>false));
+                return response()->json(['message' => 'Please Insert password!', 'data' => [], 'response_code' => 0], 200);
             }
-        } else {
-            return response()->json(array('status'=>'no password'));
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Please Insert password!', 'data' =>$request, 'response_code' => 0], 200);
         }
     }
     public function getCustomTableInfo(Request $request)

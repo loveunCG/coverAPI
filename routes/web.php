@@ -28,7 +28,6 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'agentMg', 'as' => 'ag
     Route::get('/', 'HomeController@agentMg');
     Route::get('/getAgentTableInfo', 'Web\UserController@getAgentTableInfo');
     Route::get('/getAgentDetailInfo/{id}', 'Web\UserController@getAgentDetailInfo');
-    Route::post('/test', 'Web\UserController@test');
     Route::post('/create/{id?}', 'Web\UserController@create');
     Route::post('/removeAgent', 'Web\UserController@removeAgent');
     Route::post('/resetPassword', 'Web\UserController@resetPassword');
@@ -42,7 +41,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
     Route::get('/getCustomTableInfo', 'Web\UserController@getCustomTableInfo');
     Route::get('/getCustomDetailInfo/{id?}', 'Web\UserController@getCustomDetailInfo');
     Route::post('/resetPassword', 'Web\UserController@resetPassword');
-    Route::post('/removeCustomter/', 'Web\UserController@removeCustomer');
+    Route::post('/removeCustomter', 'Web\UserController@removeCustomer');
 });
 // setting module
 

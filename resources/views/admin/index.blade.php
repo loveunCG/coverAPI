@@ -230,7 +230,7 @@
                 title: 'Alert',
                 content: 'Do you want to active this Account?',
                 icon: 'fa fa-warning',
-                theme: 'material',
+                theme: 'bootstrap',
                 autoClose: 'chancel|10000',
                 animation: 'zoom',
                 closeAnimation: 'scale',
@@ -263,7 +263,7 @@
                 title: 'Alert',
                 content: 'Do you want to Stop this Account?',
                 icon: 'fa fa-warning',
-                theme: 'material',
+                theme: 'bootstrap',
                 autoClose: 'chancel|10000',
                 animation: 'zoom',
                 closeAnimation: 'scale',
@@ -293,7 +293,7 @@
             $.confirm({
                 title: 'Warring',
                 content: 'Do you want this Account？',
-                theme: 'material',
+                theme: 'bootstrap',
                 columnClass: 'small',
                 autoClose: 'chancel|10000',
                 closeIcon: true,
@@ -353,7 +353,7 @@
             $.confirm({
                 title: 'Reset Password',
                 icon: 'fa fa-edit',
-                theme: 'material',
+                theme: 'bootstrap',
                 columnClass: 'col-md-4 col-md-offset-4',
                 content: '' +
                 '<form id = "resetPasswordForm">\n' +

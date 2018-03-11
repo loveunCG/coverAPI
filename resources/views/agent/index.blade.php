@@ -133,6 +133,8 @@
         </div>
     </div>
 
+    <input type="hidden" id="tmpAdminId" />
+
     <div id="editAgentUser" data-iziModal-title="Edit Agent Account"  data-iziModal-icon="icon-home">
         <div class="panel panel-info">
             <div class="panel-heading">
@@ -286,7 +288,7 @@
                     title: 'Alert',
                     content: 'Do you want to active this Account?',
                     icon: 'fa fa-warning',
-                    theme: 'material',
+                    theme: 'bootstrap',
                     autoClose: 'chancel|10000',
                     animation: 'zoom',
                     closeAnimation: 'scale',
@@ -317,7 +319,7 @@
                     title: 'Alert',
                     content: 'Do you want to Stop this Account?',
                     icon: 'fa fa-warning',
-                    theme: 'material',
+                    theme: 'bootstrap',
                     autoClose: 'chancel|10000',
                     animation: 'zoom',
                     closeAnimation: 'scale',
@@ -346,7 +348,7 @@
                 $.confirm({
                     title: 'Warring',
                     content: 'Do you want this Account？',
-                    theme: 'material',
+                    theme: 'bootstrap',
                     columnClass: 'small',
                     autoClose: 'chancel|10000',
                     closeIcon: true,
@@ -401,7 +403,7 @@
                 $.confirm({
                     title: 'Reset Password',
                     icon: 'fa fa-edit',
-                    theme: 'material',
+                    theme: 'bootstrap',
                     columnClass: 'col-md-4 col-md-offset-4',
                     content: '' +
                     '<form id = "resetPasswordForm">\n' +
@@ -449,16 +451,26 @@
                                     $.alert('Please insert Password');
                                     return true;
                                 }
+                                $('#admin_idTmp').val($('#tmpAdminId').val());
+
                                 let formData = $('#resetPasswordForm').serialize();
-                                let strURL = '{{url('/adminMg/resetPassword')}}';
+                                alert(formData);
+                                let strURL = '{{url('agentMg/resetPassword')}}';
                                 $.ajax({
                                     dataType: "json",
                                     url: strURL,
-                                    type: 'POST',
+                                    method: "POST",
                                     data: formData,
-                                    success: function () {
+                                    success: function (response)
+                                    {
+                                      console.log(response);
+                                      if(response.response_code){
                                         $.alert('Reset Password Successfully!');
                                         resetButton();
+
+                                      }else{
+
+                                      }
                                     }
                                 });
 
