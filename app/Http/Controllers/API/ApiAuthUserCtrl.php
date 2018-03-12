@@ -176,7 +176,7 @@ class ApiAuthUserCtrl extends Controller
         $postcode = ($request->postcode != null) ? $request->postcode : $user->postcode;
         $state = ($request->state != null) ? $request->state : $user->state;
         $country = ($request->country != null) ? $request->country : $user->country;
-        $password = ($request->country != null) ? $request->password  : $user->password;
+        // $password = ($request->password != null) ? $request->password  : $user->password;
         if ($request->hasFile('photo') > 0) {
             $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
             $data = [
@@ -190,7 +190,6 @@ class ApiAuthUserCtrl extends Controller
                 "state" => $state,
                 "country" => $country,
                 "image" => $photo,
-                "password" => $password,
             ];
         } else {
             $data = [
@@ -203,7 +202,6 @@ class ApiAuthUserCtrl extends Controller
                 "postcode" => $postcode,
                 "state" => $state,
                 "country" => $country,
-                "password" => $password,
             ];
         }
         $customer = User::findOrFail($id)->update($data);
