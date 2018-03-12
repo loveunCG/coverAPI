@@ -122,8 +122,9 @@ class ApiCustomerController extends Controller
         $jobmodel->country = $country;
         $jobmodel->job_status = 0;
         $jobmodel->expired_date = $expired_date;
-        $result = $jobmodel->save();
+
         try {
+            $result = $jobmodel->save();
             if ($result) {
                 // Update documents table
                 for ($i = 0; $i < count($request->documents); $i++) {
