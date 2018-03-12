@@ -220,16 +220,20 @@ class ApiAuthUserCtrl extends Controller
 
     public function checkPhoneVerify(Request $request)
     {
-        if ($request->has(['phoneno', 'verifyToken'])) {
-            $where = $request->only(['phoneno', 'verifyToken']);
-            $resultVerify = PhoneVerify::where($where)->get();
-            if (count($resultVerify) > 0) {
-                return response()->json(['message' => 'verifying is okay!', 'data' => [], 'response_code' => 1], 200);
+        try {
+            if ($request->has(['phoneno', 'verifyToken'])) {
+                $where = array('phone_num' => $request->phoneno, 'verify_num'=>$request->verifyToken );
+                $resultVerify = PhoneVerify::where($where)->get();
+                if (count($resultVerify) > 0) {
+                    return response()->json(['message' => 'verifying is okay!', 'data' => [], 'response_code' => 1], 200);
+                } else {
+                    return response()->json(['message' => 'verifying is failed', 'data' => [], 'response_code' => 0], 200);
+                }
             } else {
-                return response()->json(['message' => 'verifying is failed', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'There is no phone number or verify number', 'data' => [], 'response_code' => 0], 200);
             }
-        } else {
-            return response()->json(['message' => 'There is no phone number or verify number', 'data' => [], 'response_code' => 0], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'server error', 'data' => $e, 'response_code' => 0], 200);
         }
     }
 
