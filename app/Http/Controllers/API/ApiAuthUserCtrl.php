@@ -97,9 +97,9 @@ class ApiAuthUserCtrl extends Controller
             $user = $this->create($request->all());
             $user->update($request->only('refferalcode'));
         } else {
-            if (!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()) {
-                return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
-            }
+            // if (!PhoneVerify::where(array('verify_num'=>$request->verifyToken, 'phone_num'=>$request->phoneno))->first()) {
+            //     return response()->json(['message' => 'Phone verifying is failed', 'data' => null, 'response_code' => 0], 200);
+            // }
             $user = $this->create($request->all());
             $referal = new ReferralCodeModel();
             $referal->user_id = $user->id;
@@ -139,8 +139,8 @@ class ApiAuthUserCtrl extends Controller
         }
 
         try {
-            // $twilio = new Twilio('AC4c86492ba759fa6484c7c9e91e11af8d', '21fd34588b48408a73701b9bf1d9ea7b', '+19042950814', false);
-            // $twilio->message("$request->phoneno", 'Verify code for EASYCOVER security is : '.$message.' please check this. Thank you!');
+            $twilio = new Twilio('AC4c86492ba759fa6484c7c9e91e11af8d', '21fd34588b48408a73701b9bf1d9ea7b', '+19042950814', false);
+            $twilio->message("$request->phoneno", 'Verify code for EASYCOVER security is : '.$message.' please check this. Thank you!');
             // Twilio::message($request->phoneno, $message);
             $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
             if (empty($checkPhone)) {
