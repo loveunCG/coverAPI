@@ -67,9 +67,9 @@ class SettingController extends Controller
 
     public function getCompanyTableInfo(Request $request)
     {
-        $companys = CompanyModel::all();
-        $i = 1;
         try {
+            $companys = CompanyModel::all();
+            $i = 1;
             if (count($companys) > 0) {
                 foreach ($companys as $data) {
                     $company_id = '<input type="hidden" class="company_id" value="' . $data->id . '">';
