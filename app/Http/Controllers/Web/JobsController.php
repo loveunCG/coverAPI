@@ -72,7 +72,7 @@ class JobsController extends Controller
             ' ',
             ' '
           );
-            return response()->json($job_list);
+            return response()->json($e);
         }
         return response()->json($job_list);
     }
