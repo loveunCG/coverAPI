@@ -10,6 +10,7 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+// $app->register(LaravelFCM\FCMServiceProvider::class);
 
 $app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')

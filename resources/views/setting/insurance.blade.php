@@ -224,7 +224,7 @@
 
         function selectInsurance(params) {
             $('#editInsuranceForm')[0].reset();
-            $('#insurance_id').val(params.insur_id);
+            $('#insurance_id').val(params.id);
             $('#insuranceName').val(params.insurance_name);
             $('#insuranceComment').val(params.insur_comment);
             $('#editInsuranceBtn').removeAttr('disabled');

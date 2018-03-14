@@ -139,7 +139,7 @@ class ApiAuthUserCtrl extends Controller
         }
 
         try {
-            $twilio = new Twilio('AC4c86492ba759fa6484c7c9e91e11af8d', '21fd34588b48408a73701b9bf1d9ea7b', '+19042950814', false);
+            $twilio = new Twilio('ACc4dd7a92b85eaf6f7238e4e1876981fe', 'e427af11aee1056bab5135223116fd06', '+17866295475', false);
             $twilio->message("$request->phoneno", 'Verify code for EASYCOVER security is : '.$message.' please check this. Thank you!');
             // Twilio::message($request->phoneno, $message);
             $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();

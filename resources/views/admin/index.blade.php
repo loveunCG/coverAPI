@@ -73,7 +73,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Email</label>
                     <div class="col-md-9">
-                        <input type="email" name="email"  onchange="Duplication(this.value)" id="newEmail" class="form-control">
+                        <input type="email" name="email" id="newEmail" class="form-control">
                     </div>
                     {{ csrf_field() }}
                 </div>
@@ -527,7 +527,6 @@
         };
         $.ajax(settings).done(function (response) {
             console.log(response);
-
                 $.alert({
                     title: 'Ok!',
                     content: response.message,
