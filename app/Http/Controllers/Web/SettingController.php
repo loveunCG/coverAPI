@@ -69,26 +69,37 @@ class SettingController extends Controller
     {
         $companys = CompanyModel::all();
         $i = 1;
-        if (count($companys) > 0) {
-            foreach ($companys as $data) {
-                $company_id = '<input type="hidden" class="company_id" value="' . $data->id . '">';
-                
-                $company_list['data'][] = array(
-                    $i++ . $company_id,
-                    $data->company_name,
-                    $data->insurance->insurance_name,
-                    $data->created_at->format("Y-m-d h:i:s")
-                );
+        try {
+            if (count($companys) > 0) {
+                foreach ($companys as $data) {
+                    $company_id = '<input type="hidden" class="company_id" value="' . $data->id . '">';
+                    $company_list['data'][] = array(
+                      $i++ . $company_id,
+                      $data->company_name,
+                      $data->insurance->insurance_name,
+                      $data->created_at->format("Y-m-d h:i:s")
+                  );
+                }
+            } else {
+                $company_list['data'][0] = array(
+                  '',
+                  '',
+                  '',
+                  '',
+                  ''
+              );
             }
-        } else {
-            $company_list['data'][] = array(
-                '',
-                '',
-                '',
-                '',
-                ''
-            );
+        } catch (\Exception $e) {
+            $company_list['data'][0]= array(
+              '',
+              '',
+              '',
+              '',
+              ''
+          );
         }
+
+
         return response()->json($company_list);
     }
     //
