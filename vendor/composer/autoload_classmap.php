@@ -52,7 +52,6 @@ return array(
     'App\\Model\\AssignJob' => $baseDir . '/app/Model/AssignJob.php',
     'App\\Model\\DocumentsModel' => $baseDir . '/app/Model/DocumentsModel.php',
     'App\\Model\\InsuranceModel' => $baseDir . '/app/Model/InsuranceModel.php',
-    'App\\Model\\InsurancesModel' => $baseDir . '/app/Model/InsurancesModel.php',
     'App\\Model\\JobsModel' => $baseDir . '/app/Model/JobsModel.php',
     'App\\Model\\PhoneVerify' => $baseDir . '/app/Model/PhoneVerify.php',
     'App\\Model\\QuotationModel' => $baseDir . '/app/Model/QuotationModel.php',
