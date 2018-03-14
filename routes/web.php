@@ -1,6 +1,4 @@
 <?php
-
-
 Route::get('login', 'Auth\AdminLoginController@showLoginForm')->name('login');;
 Route::post('login', 'Auth\AdminLoginController@login');
 Route::post('logout', 'Auth\AdminLoginController@logout')->name('logout');
@@ -45,7 +43,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
 });
 // setting module
 
-Route::group(['middleware' => [], 'prefix' => 'setting', 'as' => 'setting.'], function () {
+Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'setting.'], function () {
     Route::get('/insurance', 'HomeController@insurance');
     Route::get('/company', 'HomeController@company');
     Route::get('/getInsuranceTableInfo', 'Web\SettingController@getInsuranceTable');
@@ -56,7 +54,7 @@ Route::group(['middleware' => [], 'prefix' => 'setting', 'as' => 'setting.'], fu
     Route::post('/addCompanyInfo', 'Web\SettingController@addCompany');
 });
 
-Route::group(['middleware' => [], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
+Route::group(['middleware' => ['auth:admin'], 'prefix' => 'jobs', 'as' => 'jobs.'], function () {
     Route::get('/', 'HomeController@jobsMg');
     Route::get('/getJobListData', 'Web\JobsController@getJobList');
     Route::get('/getjobdetail/{id?}', 'Web\JobsController@JobDetailView');
