@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
 });
 // setting module
 
-Route::group(['middleware' => ['auth:admin'], 'prefix' => 'setting', 'as' => 'setting.'], function () {
+Route::group(['middleware' => [], 'prefix' => 'setting', 'as' => 'setting.'], function () {
     Route::get('/insurance', 'HomeController@insurance');
     Route::get('/company', 'HomeController@company');
     Route::get('/getInsuranceTableInfo', 'Web\SettingController@getInsuranceTable');
