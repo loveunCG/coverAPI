@@ -50,18 +50,18 @@ class ApiAuthUserCtrl extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['message' => 'invalid_credentials', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'invalid_credentials', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['message' => 'could_not_create_token', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'could_not_create_token', 'data' => null, 'response_code' => 0], 500);
         }
         if ($request->has(['email', 'devicetoken'])) {
             $user = User::where(['email' => $request->email])->first();
             $user->devicetoken = $request->devicetoken;
             $user->save();
         } else {
-            return response()->json(['message' => 'Device Token updation Problem', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'Device Token updation Problem', 'data' => null, 'response_code' => 0], 200);
         }
         return response()->json(['message' => 'successfully login and user is verified',
             'data' => User::where(['email' => $request->email])->first(), 'token'=>$token,
@@ -111,7 +111,7 @@ class ApiAuthUserCtrl extends Controller
             $token = JWTAuth::attempt($credentials);
             return response()->json(['message' => 'Signup is successully', 'data' => $user, 'token'=>$token, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
 
@@ -135,7 +135,7 @@ class ApiAuthUserCtrl extends Controller
         $message = $this->sms_content();
 
         if (!$request->has('phoneno')) {
-            return response()->json(['message' => 'please insert correct phone number', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'please insert correct phone number', 'data' => null, 'response_code' => 0], 200);
         }
 
         try {
@@ -154,9 +154,9 @@ class ApiAuthUserCtrl extends Controller
                 $phoneVerify->save();
             }
             if ($phoneVerify->id) {
-                return response()->json(['message' => 'SMS is already sent', 'data' => [], 'response_code' => 1], 200);
+                return response()->json(['message' => 'SMS is already sent', 'data' => null, 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'there is no verify number', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'there is no verify number', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Cannot send SMS', 'data' => $exception, 'response_code' => 0], 500);
@@ -209,10 +209,10 @@ class ApiAuthUserCtrl extends Controller
             try {
                 return response()->json(['message' => 'update successfully ', 'data' =>$customer, 'response_code' => 1], 200);
             } catch (\Exception $exception) {
-                return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+                return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
             }
         } else {
-            return response()->json(['message' => 'updation problem occure ', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'updation problem occure ', 'data' => null, 'response_code' => 0], 200);
         }
     }
 
@@ -223,12 +223,12 @@ class ApiAuthUserCtrl extends Controller
                 $where = array('phone_num' => $request->phoneno, 'verify_num'=>$request->verifyToken );
                 $resultVerify = PhoneVerify::where($where)->get();
                 if (count($resultVerify) > 0) {
-                    return response()->json(['message' => 'verifying is okay!', 'data' => [], 'response_code' => 1], 200);
+                    return response()->json(['message' => 'verifying is okay!', 'data' => null, 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'verifying is failed', 'data' => [], 'response_code' => 0], 200);
+                    return response()->json(['message' => 'verifying is failed', 'data' => null, 'response_code' => 0], 200);
                 }
             } else {
-                return response()->json(['message' => 'There is no phone number or verify number', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'There is no phone number or verify number', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $e) {
             return response()->json(['message' => 'server error', 'data' => $e, 'response_code' => 0], 200);
@@ -243,7 +243,7 @@ class ApiAuthUserCtrl extends Controller
             $referralCode = ReferralCodeModel::where($where)->first();
             return response()->json(['message' => 'get referal Code', 'data' => ['referral_code'=>$referralCode->rederral_code], 'response_code' => 0], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'getting is failed', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'getting is failed', 'data' => null, 'response_code' => 0], 200);
         }
     }
 }

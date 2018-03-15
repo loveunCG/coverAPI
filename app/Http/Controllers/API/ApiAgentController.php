@@ -42,13 +42,13 @@ class ApiAgentController extends Controller
                             ->get();
                     return response()->json(['message' => 'Nearest agents', 'data' => $agents, 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'Custmor is not exist', 'data' => [], 'response_code' => 0], 200);
+                    return response()->json(['message' => 'Custmor is not exist', 'data' => null, 'response_code' => 0], 200);
                 }
             } catch (\Exception $exception) {
                 return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
             }
         } else {
-            return response()->json(['message' => 'Customer id is missing', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'Customer id is missing', 'data' => null, 'response_code' => 0], 200);
         }
     }
 
@@ -79,7 +79,7 @@ class ApiAgentController extends Controller
             if ($result) {
                 return response()->json(['message' => 'job is assigned', 'data' => AssignJob::findOrFail($ajob->id), 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'job  assigning error', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'job  assigning error', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
@@ -111,7 +111,7 @@ class ApiAgentController extends Controller
                 return response()->json(['message' => 'This job is not assigned yet', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
 
@@ -148,12 +148,12 @@ class ApiAgentController extends Controller
             if ($action->id) {
                 return response()->json(['message' => 'This job is updated', 'data' => $action, 'response_code' => 0], 200);
             } else {
-                return response()->json(['message' => 'This job status is not updated', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'This job status is not updated', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
-        return response()->json(['message' => 'Some fields missing', 'data' => [], 'response_code' => 0], 200);
+        return response()->json(['message' => 'Some fields missing', 'data' => null, 'response_code' => 0], 200);
     }
 
     /**
@@ -187,7 +187,7 @@ class ApiAgentController extends Controller
                 }
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
     /**
@@ -211,10 +211,10 @@ class ApiAgentController extends Controller
             if (count($job) > 0) {
                 return response()->json(['message' => 'All assigned job', 'data' => $job, 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'No job is assigned to this agent', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'No job is assigned to this agent', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
     /**
@@ -239,10 +239,10 @@ class ApiAgentController extends Controller
             if (count($job) > 0) {
                 return response()->json(['message' => 'Agent History', 'data' => $job, 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'No job is completed by this agent', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'No job is completed by this agent', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
 

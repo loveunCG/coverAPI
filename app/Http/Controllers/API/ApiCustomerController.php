@@ -45,7 +45,7 @@ class ApiCustomerController extends Controller
         $documentArr = array();
         $arrLength = sizeof($request->document);
         if ($arrLength == 0) {
-            return response()->json(['message' => 'No file uploaded', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'No file uploaded', 'data' => null, 'response_code' => 0], 200);
         }
         try {
             return response()->json($request->document);
@@ -138,10 +138,10 @@ class ApiCustomerController extends Controller
                 $jobCreated['documents'] = DocumentsModel::where(['job_id' => $jobmodel->id])->get();
                 return response()->json(['message' => 'New job is created', 'data' => $jobCreated, 'response_code' => 1], 200);
             } else {
-                return response()->json(['message' => 'Create job problem', 'data' => [], 'response_code' => 0], 200);
+                return response()->json(['message' => 'Create job problem', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
     /**
@@ -170,7 +170,7 @@ class ApiCustomerController extends Controller
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  posted jobs by cutomer', 'data' => $jobData, 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'there is no posted jobs', 'data' => [], 'response_code' => 0], 200);
+                    return response()->json(['message' => 'there is no posted jobs', 'data' => null, 'response_code' => 0], 200);
                 }
             } else {
                 $userJobs = JobsModel::join('users', 'users.id', '=', 'jobs.user_id')
@@ -181,7 +181,7 @@ class ApiCustomerController extends Controller
                 $jobData = array();
                 for ($i = 0; $i < count($userJobs); $i++) {
                     $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
-                    $insuranceData = InsuranceModel::finfOrFail($userJobs[$i]['insurance_type']);
+                    $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
                     $insuranceData->companys;
                     $userJobs[$i]['documents'] = $documents;
                     $data = ["jobs" => $userJobs[$i]];
@@ -190,11 +190,11 @@ class ApiCustomerController extends Controller
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  created jobs by person', 'data' => $jobData, 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'No job is created by this person', 'data' => [], 'response_code' => 0], 200);
+                    return response()->json(['message' => 'No job is created by this person', 'data' => null, 'response_code' => 0], 200);
                 }
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
     // GET Job Details
@@ -205,7 +205,7 @@ class ApiCustomerController extends Controller
                 $userJobs = JobsModel::where(['id' => $request->jobId])->first();
                 $jobData = array();
                 $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
-                $insuranceData = InsuranceModel::finfOrFail($userJobs[$i]['insurance_type']);
+                $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
                 $insuranceData->companys;
                 $userJobs['documents'] = $documents;
                 $userJobs['insurance_id'] = $insuranceData->id;
@@ -217,13 +217,13 @@ class ApiCustomerController extends Controller
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'job', 'data' => $jobData, 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'No job is created by this person', 'data' => [], 'response_code' => 0], 200);
+                    return response()->json(['message' => 'No job is created by this person', 'data' => null, 'response_code' => 0], 200);
                 }
             } catch (\Exception $exception) {
-                return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+                return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
             }
         } else {
-            return response()->json(['message' => 'job id not given', 'data' => [], 'response_code' => 0], 200);
+            return response()->json(['message' => 'job id not given', 'data' => null, 'response_code' => 0], 200);
         }
     }
 
@@ -231,17 +231,17 @@ class ApiCustomerController extends Controller
     {
         if (!empty($request->insurId)) {
             try {
-                $insuranceData = InsuranceModel::finfOrFail($userJobs[$i]['insurance_type']);
+                $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
                 $insuranceData->companys;
                 $send_data = array('insurance_name'=>$InsuranceData->insurance_name,'id'=>$InsuranceData->id );
 
                 if (count($InsuranceData) > 0) {
                     return response()->json(['message' => 'insurance', 'data' => $send_data, 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'No insurance is no data', 'data' => [], 'response_code' => 0], 200);
+                    return response()->json(['message' => 'No insurance is no data', 'data' => null, 'response_code' => 0], 200);
                 }
             } catch (\Exception $exception) {
-                return response()->json(['message' => 'Server Error', 'data' => [], 'response_code' => 0], 500);
+                return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
             }
         } else {
             $InsuranceDatas = InsuranceModel::all();
