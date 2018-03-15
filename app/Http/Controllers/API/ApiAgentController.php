@@ -285,7 +285,7 @@ class ApiAgentController extends Controller
                 return response()->json(['message' => 'Addition is failed', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => $question, 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
 
