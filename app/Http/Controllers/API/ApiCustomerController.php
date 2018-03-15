@@ -48,10 +48,9 @@ class ApiCustomerController extends Controller
             return response()->json(['message' => 'No file uploaded', 'data' => null, 'response_code' => 0], 200);
         }
         try {
-            return response()->json($request->document);
-
-            for ($i = 0; $i < count($request->document); $i++) {
-                $document->document = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/uploads/documents', $request->document[$i])));
+            foreach ($request->document as $docfile) {
+                $document = new DocumentsModel();
+                $document->document = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/uploads/documents', $docfile)));
                 $docName = explode('/', $document->document);
                 $document->fileName = $docName[7];
                 $document->user_id = $request->userId;

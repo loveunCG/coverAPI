@@ -136,22 +136,27 @@ class ApiAgentController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Some fields missing', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
-        $data = array('jobstatus' => $request->status);
-        $action = new AssignJob();
-        $action->jobstatus = $request->status;
-        $action->job_id = $request->jobid;
-        $action->agent_id = $user->id;
-        $action->customer_id = $request->costomerId;
 
         try {
-            $action->save();
+            if ($ajob = AssignJob::where(['job_id'=>$request->jobid,'agent_id'=>$user->id,'customer_id'=>$request->costomerId,])->first()) {
+                $ajob->jobstatus = $request->status;
+                $ajob->update();
+                $action = $ajob;
+            } else {
+                $action = new AssignJob();
+                $action->jobstatus = $request->status;
+                $action->job_id = $request->jobid;
+                $action->agent_id = $user->id;
+                $action->customer_id = $request->costomerId;
+                $action->save();
+            }
             if ($action->id) {
                 return response()->json(['message' => 'This job is updated', 'data' => $action, 'response_code' => 0], 200);
             } else {
                 return response()->json(['message' => 'This job status is not updated', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
         return response()->json(['message' => 'Some fields missing', 'data' => null, 'response_code' => 0], 200);
     }
