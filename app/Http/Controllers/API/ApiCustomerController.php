@@ -155,14 +155,12 @@ class ApiCustomerController extends Controller
                 ->select()
                 ->addSelect('jobs.id as job_id')
                 ->get();
-                return response()->json(['message' => 'All  posted jobs by cutomer', 'data' => $userJobs, 'response_code' => 1], 200);
-
                 $jobData = array();
                 for ($i = 0; $i < count($userJobs); $i++) {
                     $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
                     $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
-                    $insuranceData->companys;
                     $userJobs[$i]['documents'] = $documents;
+                    $userJobs[$i]['company'] = $insuranceData->companys;
                     $data = ["jobs" => $userJobs[$i]];
                     array_push($jobData, $data);
                 }
@@ -181,8 +179,8 @@ class ApiCustomerController extends Controller
                 for ($i = 0; $i < count($userJobs); $i++) {
                     $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
                     $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
-                    $insuranceData->companys;
                     $userJobs[$i]['documents'] = $documents;
+                    $userJobs[$i]['company'] = $insuranceData->companys;
                     $data = ["jobs" => $userJobs[$i]];
                     array_push($jobData, $data);
                 }
