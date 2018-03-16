@@ -151,7 +151,7 @@ class ApiAgentController extends Controller
                 $action->save();
             }
             if ($action->id) {
-                return response()->json(['message' => 'This job is updated', 'data' => $action, 'response_code' => 0], 200);
+                return response()->json(['message' => 'This job is updated', 'data' => $action, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'This job status is not updated', 'data' => null, 'response_code' => 0], 200);
             }
