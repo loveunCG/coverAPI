@@ -103,8 +103,8 @@ class ApiAgentController extends Controller
         }
         try {
             $job = User::join('jobs', 'users.id', '=', 'jobs.user_id')
-                            ->join('assignjobs', 'users.id', '=', 'assignjobs.customer_id')
-                            ->where(['assignjobs.id' => $request->assignedjobid])->get();
+                            ->join('assignJobs', 'users.id', '=', 'assignJobs.customer_id')
+                            ->where(['assignJobs.id' => $request->assignedjobid])->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'job is assigned', 'data' => $job, 'response_code' => 1], 200);
             } else {
@@ -175,7 +175,7 @@ class ApiAgentController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
         try {
             if ($user->usertype == 'agent') {
-                $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignjobs.job_id')
+                $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
                                 ->where(['assignJobs.agent_id' => $user->id])->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);
@@ -183,7 +183,7 @@ class ApiAgentController extends Controller
                     return response()->json(['message' => 'This agent is no assigned jobs list', 'data' => null, 'response_code' => 0], 200);
                 }
             } else {
-                $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignjobs.job_id')
+                $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
                                 ->where(['assignJobs.customer_id' => $user->id])->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);

@@ -15,6 +15,7 @@ use JWTAuth;
 use Aloha\Twilio\Twilio;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Auth\Events\Registered;
+use App\Model\CompanyModel;
 
 // use Aloha\Twilio\Support\Laravel\Facade;
 
@@ -240,9 +241,20 @@ class ApiAuthUserCtrl extends Controller
         $where = array('user_id' => $user->id);
         try {
             $referralCode = ReferralCodeModel::where($where)->first();
-            return response()->json(['message' => 'get referal Code', 'data' => ['referral_code'=>$referralCode->rederral_code], 'response_code' => 0], 200);
+            return response()->json(['message' => 'get referal Code', 'data' => ['referral_code'=>$referralCode->rederral_code], 'response_code' => 1], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'getting is failed', 'data' => null, 'response_code' => 0], 200);
         }
+    }
+
+    public function getcompany(){
+      $user = JWTAuth::parseToken()->authenticate();
+      $companys = CompanyModel::all();
+      try {
+          return response()->json(['message' => 'get company infomation', 'data' => $companys, 'response_code' => 1], 200);
+      } catch (\Exception $e) {
+          return response()->json(['message' => 'getting is failed', 'data' => $e, 'response_code' => 0], 200);
+      }
+
     }
 }
