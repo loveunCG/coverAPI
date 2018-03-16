@@ -43,8 +43,7 @@ class ApiCustomerController extends Controller
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
         $documentArr = array();
-        $arrLength = sizeof($request->document);
-        if ($arrLength == 0) {
+        if (empty($request->document)) {
             return response()->json(['message' => 'No file uploaded', 'data' => null, 'response_code' => 0], 200);
         }
         try {
