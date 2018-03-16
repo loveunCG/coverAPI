@@ -156,13 +156,13 @@ class ApiCustomerController extends Controller
                 ->addSelect('jobs.id as job_id')
                 ->get();
                 $jobData = array();
-                for ($i = 0; $i < count($userJobs); $i++) {
-                    $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
-                    $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
-                    $userJobs[$i]['documents'] = $documents;
-                    $userJobs[$i]['company'] = $insuranceData->companys;
-                    $data = ["jobs" => $userJobs[$i]];
-                    array_push($jobData, $data);
+                foreach ($userJobs as $userJob) {
+                  $documents = DocumentsModel::where(['job_id' => $userJob['id']])->get();
+                  $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
+                  $userJob['documents'] = $documents;
+                  $userJob['company'] = $insuranceData->companys;
+                  $data = ["jobs" => $userJob];
+                  array_push($jobData, $data);
                 }
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  posted jobs by cutomer', 'data' => $jobData, 'response_code' => 1], 200);
@@ -176,13 +176,13 @@ class ApiCustomerController extends Controller
                   ->addSelect('jobs.id as job_id')
                   ->get();
                 $jobData = array();
-                for ($i = 0; $i < count($userJobs); $i++) {
-                    $documents = DocumentsModel::where(['job_id' => $userJobs[$i]['id']])->get();
-                    $insuranceData = InsuranceModel::findOrFail($userJobs[$i]['insurance_type']);
-                    $userJobs[$i]['documents'] = $documents;
-                    $userJobs[$i]['company'] = $insuranceData->companys;
-                    $data = ["jobs" => $userJobs[$i]];
-                    array_push($jobData, $data);
+                foreach ($userJobs as $userJob) {
+                  $documents = DocumentsModel::where(['job_id' => $userJob['id']])->get();
+                  $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
+                  $userJob['documents'] = $documents;
+                  $userJob['company'] = $insuranceData->companys;
+                  $data = ["jobs" => $userJob];
+                  array_push($jobData, $data);
                 }
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  created jobs by person', 'data' => $jobData, 'response_code' => 1], 200);
@@ -191,7 +191,7 @@ class ApiCustomerController extends Controller
                 }
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
     // GET Job Details
