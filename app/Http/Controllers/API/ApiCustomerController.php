@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use App\User;
 use App\Model\InsuranceModel;
 use JWTAuth;
+use App\Model\CompanyModel;
+
 
 class ApiCustomerController extends Controller
 {
@@ -35,9 +37,8 @@ class ApiCustomerController extends Controller
         // uploading multiple documents
 
         $validator = Validator::make($request->all(), [
-                  'document' => 'required',
-                  'userId' => 'required',
-                  'jobId' => 'required'
+                  'document' => 'required'
+
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
@@ -48,14 +49,8 @@ class ApiCustomerController extends Controller
         }
         try {
             foreach ($request->document as $docfile) {
-                $document = new DocumentsModel();
-                $document->document = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/uploads/documents', $docfile)));
-                $docName = explode('/', $document->document);
-                $document->fileName = $docName[7];
-                $document->user_id = $request->userId;
-                $document->job_id = $request->jobId;
-                $result = $document->save();
-                array_push($documentArr, $docName[7]);
+                $document = asset('/').'storage/app/'.((Storage::disk('local')->put('/public/uploads/documents', $docfile)));
+                array_push($documentArr, $document);
             }
         } catch (\Exception $e) {
             return response()->json(['message' => 'upload failed', 'data' => $e, 'response_code' => 0], 500);
@@ -90,7 +85,9 @@ class ApiCustomerController extends Controller
           'address' => 'required',
           'state' => 'required',
           'expired_date' => 'required',
-          'country' => 'required'
+          'country' => 'required',
+          'company_id' => 'required',
+          'documents'=>'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
@@ -106,6 +103,7 @@ class ApiCustomerController extends Controller
         $state = $request->state;
         $country = $request->country;
         $expired_date = $request->expired_date;
+        $company_id = $request->company_id;
         // create jobs transaction record
         $jobmodel = new JobsModel();
         $jobmodel->user_id = $userid;
@@ -120,26 +118,26 @@ class ApiCustomerController extends Controller
         $jobmodel->country = $country;
         $jobmodel->job_status = 0;
         $jobmodel->expired_date = $expired_date;
-
+        $jobmodel->company_id = $company_id;
         try {
             $result = $jobmodel->save();
             if ($result) {
                 // Update documents table
-                for ($i = 0; $i < count($request->documents); $i++) {
-                    $data = [
-                      "user_id" => $userid,
-                      "job_id" => $result->id,
-                  ];
-                    $document = DocumentsModel::where(['fileName' => $request->documents[$i]])->update($data);
+                foreach ($request->documents as $docurl) {
+                  $document = new DocumentsModel();
+                  $document->user_id = $userid;
+                  $document->job_id = $jobmodel->id;
+                  $document->fileName = $docurl;
+                  $document->save();
                 }
-                $jobCreated['job'] = JobsModel::where(['id' => $jobmodel->id])->get();
+                $jobCreated['job'] = $jobmodel;
                 $jobCreated['documents'] = DocumentsModel::where(['job_id' => $jobmodel->id])->get();
                 return response()->json(['message' => 'New job is created', 'data' => $jobCreated, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'Create job problem', 'data' => null, 'response_code' => 0], 200);
             }
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
     /**
@@ -159,9 +157,9 @@ class ApiCustomerController extends Controller
                   $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                   $userJob['documents'] = $userJob->document;
                   $userJob['insurance'] = $insuranceData;
+                  $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                   $insuranceData->companys;
-                  $data = ["jobs" => $userJob];
-                  array_push($jobData, $data);
+                  array_push($jobData, $userJob);
                 }
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  posted jobs by cutomer', 'data' => $jobData, 'response_code' => 1], 200);
@@ -179,9 +177,8 @@ class ApiCustomerController extends Controller
                   $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                   $userJob['documents'] = $userJob->document;
                   $userJob['insurance'] = $insuranceData;
-                  $insuranceData->companys;
-                  $data = ["jobs" => $userJob];
-                  array_push($jobData, $data);
+                  $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
+                  array_push($jobData, $userJob);
                 }
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  created jobs by person', 'data' => $jobData, 'response_code' => 1], 200);

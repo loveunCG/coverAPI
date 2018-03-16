@@ -10,7 +10,7 @@ class JobsModel extends Model
     //
     protected $table='jobs';
     protected $fillable=['user_id','name','nric','phoneno','insurance_type',
-       'indicative_sum','address','postcode','state','country','remarks','quotation_price', 'expired_date'];
+       'indicative_sum','address','postcode','state','company_id','country','remarks','quotation_price', 'expired_date'];
     public function documentJob()
     {
         return $this->hasMany(DocumentsModel::class, 'job_id');

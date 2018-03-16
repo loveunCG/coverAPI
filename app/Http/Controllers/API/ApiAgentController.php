@@ -26,7 +26,7 @@ class ApiAgentController extends Controller
                     $lon = 0;
                     foreach ($customer as $val) {
                         $lat = $val->latitude;
-                        $lon = $val->latitude;
+                        $lon = $val->longitude;
                     }
                     $agents = DB::table("users")
                             ->select("users.*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
@@ -36,7 +36,6 @@ class ApiAgentController extends Controller
 		                 * sin(radians(users.latitude))) AS distance"))
                             ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
                             ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
-                            ->groupBy("users.id")
                             ->orderBy('distance', 'desc')
                             ->take(3)
                             ->get();
@@ -210,6 +209,7 @@ class ApiAgentController extends Controller
 
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
+                    ->join('jobs', 'assignJobs.job_id','=','jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id])
                     ->where('assignJobs.jobstatus', '=', null)
                     ->get();
@@ -238,6 +238,7 @@ class ApiAgentController extends Controller
 
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
+                    ->join('jobs', 'assignJobs.job_id','=','jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id])
                     ->where('assignJobs.jobstatus', '<>', null)
                     ->get();
