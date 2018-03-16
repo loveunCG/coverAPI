@@ -157,10 +157,10 @@ class ApiCustomerController extends Controller
                 ->get();
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
-                  $documents = DocumentsModel::where(['job_id' => $userJob['id']])->get();
                   $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
-                  $userJob['documents'] = $documents;
-                  $userJob['company'] = $insuranceData->companys;
+                  $userJob['documents'] = $userJob->document;
+                  $userJob['insurance'] = $insuranceData;
+                  $insuranceData->companys;
                   $data = ["jobs" => $userJob];
                   array_push($jobData, $data);
                 }
@@ -177,10 +177,10 @@ class ApiCustomerController extends Controller
                   ->get();
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
-                  $documents = DocumentsModel::where(['job_id' => $userJob['id']])->get();
                   $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
-                  $userJob['documents'] = $documents;
-                  $userJob['company'] = $insuranceData->companys;
+                  $userJob['documents'] = $userJob->document;
+                  $userJob['insurance'] = $insuranceData;
+                  $insuranceData->companys;
                   $data = ["jobs" => $userJob];
                   array_push($jobData, $data);
                 }
