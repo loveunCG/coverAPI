@@ -39,8 +39,8 @@ class ApiAuthUserCtrl extends Controller
             'devicename' => 'required|string|max:255',
             'usertype' => 'required|string|max:255',
             'devicetoken' => 'required|string|max:255',
-            'latitude' => 'required|string|max:255',
-            'longitude' => 'required|string|max:255',
+            'latitude' => 'required|numeric|between:0,99.99',
+            'longitude' => 'required|numeric|between:0,99.99',
             'verifyToken' => 'required|string|max:255'
         ], $messages);
     }
