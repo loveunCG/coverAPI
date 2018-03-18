@@ -13,7 +13,6 @@ use App\Model\InsuranceModel;
 use JWTAuth;
 use App\Model\CompanyModel;
 
-
 class ApiCustomerController extends Controller
 {
     public function uploadFile(Request $request)
@@ -124,11 +123,11 @@ class ApiCustomerController extends Controller
             if ($result) {
                 // Update documents table
                 foreach ($request->documents as $docurl) {
-                  $document = new DocumentsModel();
-                  $document->user_id = $userid;
-                  $document->job_id = $jobmodel->id;
-                  $document->fileName = $docurl;
-                  $document->save();
+                    $document = new DocumentsModel();
+                    $document->user_id = $userid;
+                    $document->job_id = $jobmodel->id;
+                    $document->fileName = $docurl;
+                    $document->save();
                 }
                 $jobCreated['job'] = $jobmodel;
                 $jobCreated['documents'] = DocumentsModel::where(['job_id' => $jobmodel->id])->get();
@@ -154,12 +153,12 @@ class ApiCustomerController extends Controller
                 ->get();
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
-                  $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
-                  $userJob['documents'] = $userJob->document;
-                  $userJob['insurance'] = $insuranceData;
-                  $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
-                  $insuranceData->companys;
-                  array_push($jobData, $userJob);
+                    $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
+                    $userJob['documents'] = $userJob->document;
+                    $userJob['insurance'] = $insuranceData;
+                    $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
+                    $insuranceData->companys;
+                    array_push($jobData, $userJob);
                 }
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  posted jobs by cutomer', 'data' => $jobData, 'response_code' => 1], 200);
@@ -174,11 +173,11 @@ class ApiCustomerController extends Controller
                   ->get();
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
-                  $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
-                  $userJob['documents'] = $userJob->document;
-                  $userJob['insurance'] = $insuranceData;
-                  $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
-                  array_push($jobData, $userJob);
+                    $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
+                    $userJob['documents'] = $userJob->document;
+                    $userJob['insurance'] = $insuranceData;
+                    $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
+                    array_push($jobData, $userJob);
                 }
                 if (count($jobData) > 0) {
                     return response()->json(['message' => 'All  created jobs by person', 'data' => $jobData, 'response_code' => 1], 200);
