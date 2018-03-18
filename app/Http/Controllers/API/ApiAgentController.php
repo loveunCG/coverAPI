@@ -103,7 +103,7 @@ class ApiAgentController extends Controller
         try {
             $job = User::join('jobs', 'users.id', '=', 'jobs.user_id')
                             ->join('assignJobs', 'users.id', '=', 'assignJobs.customer_id')
-                            ->where(['assignJobs.id' => $request->assignedjobid])->get();
+                            ->where(['assignJobs.job_id' => $request->assignedjobid])->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'job is assigned', 'data' => $job, 'response_code' => 1], 200);
             } else {

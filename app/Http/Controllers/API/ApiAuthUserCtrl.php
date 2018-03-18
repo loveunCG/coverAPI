@@ -82,7 +82,9 @@ class ApiAuthUserCtrl extends Controller
                 'email' => $data['email'],
                 'status' => 0,
                 'isAvailable' => 1,
-                'password' => bcrypt($data['password'])
+                'password' => bcrypt($data['password']),
+                'latitude'=>$data['latitude'],
+                'longitude'=>$data['longitude']
             ];
         return User::create($user);
     }
