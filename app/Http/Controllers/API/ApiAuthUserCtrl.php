@@ -181,37 +181,23 @@ class ApiAuthUserCtrl extends Controller
         $postcode = ($request->postcode != null) ? $request->postcode : $user->postcode;
         $state = ($request->state != null) ? $request->state : $user->state;
         $country = ($request->country != null) ? $request->country : $user->country;
+        $user->username = $username;
+        $user->email = $email;
+        $user->username = $username;
+        $user->phoneno = $phone;
+        $user->dob = $dob;
+        $user->nrc = $nrc;
+        $user->address = $address;
+        $user->postcode = $postcode;
+        $user->state = $state;
+        $user->country = $country;
         if ($request->hasFile('photo') > 0) {
             $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
-            $data = [
-                "username" => $username,
-                "email" => $email,
-                "phoneno" => $phone,
-                "nrc" => $nrc,
-                "dob" => $dob,
-                "address" => $address,
-                "postcode" => $postcode,
-                "state" => $state,
-                "country" => $country,
-                "image" => $photo,
-            ];
-        } else {
-            $data = [
-                "username" => $username,
-                "email" => $email,
-                "phoneno" => $phone,
-                "nrc" => $nrc,
-                "dob" => $dob,
-                "address" => $address,
-                "postcode" => $postcode,
-                "state" => $state,
-                "country" => $country,
-            ];
+            $user->image = $photo;
         }
-        $customer = User::findOrFail($id)->update($data);
-        if ($customer) {
+        if ($user->save()) {
             try {
-                return response()->json(['message' => 'update successfully ', 'data' =>$customer, 'response_code' => 1], 200);
+                return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
             } catch (\Exception $exception) {
                 return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
             }
