@@ -16,6 +16,7 @@ use Aloha\Twilio\Twilio;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Auth\Events\Registered;
 use App\Model\CompanyModel;
+use Illuminate\Support\Facades\Storage;
 
 // use Aloha\Twilio\Support\Laravel\Facade;
 
@@ -191,19 +192,20 @@ class ApiAuthUserCtrl extends Controller
         $user->postcode = $postcode;
         $user->state = $state;
         $user->country = $country;
-        if ($request->hasFile('photo') > 0) {
-            $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
-            $user->image = $photo;
-        }
-        if ($user->save()) {
-            try {
-                return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
-            } catch (\Exception $exception) {
-                return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
-            }
-        } else {
-            return response()->json(['message' => 'updation problem occure ', 'data' => null, 'response_code' => 0], 200);
-        }
+        try {
+          if ($request->hasFile('photo') > 0) {
+              $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
+              $user->image = $photo;
+          }
+          if ($user->save()) {
+              return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
+
+          } else {
+              return response()->json(['message' => 'updation problem occure ', 'data' => null, 'response_code' => 0], 200);
+          }
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
+      }
     }
 
     public function checkPhoneVerify(Request $request)
