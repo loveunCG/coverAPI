@@ -14,4 +14,9 @@ class AssignJob extends Model
     {
         return $this->belongsTo(JobsModel::class, 'job_id');
     }
+
+    public function quotation()
+    {
+        return $this->belongsTo(QuotationModel::class, 'quotation_id');
+    }
 }

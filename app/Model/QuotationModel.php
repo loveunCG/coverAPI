@@ -18,4 +18,7 @@ class QuotationModel extends Model
     {
         return $this->belongsTo(User::class, 'agent_id');
     }
+    public function assignJob(){
+       return $this->hasOne(AssignJob::class);
+    }
 }

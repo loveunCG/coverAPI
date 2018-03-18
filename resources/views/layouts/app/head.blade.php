@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link type="text/css" href="{{asset('public/fonts/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
     <!-- Font Awesome -->
-    <link type="text/css" href="{{asset('public/fonts/themify-icons/themify-icons.css')}}" rel="stylesheet">              
+    <link type="text/css" href="{{asset('public/fonts/themify-icons/themify-icons.css')}}" rel="stylesheet">
     <!-- Themify Icons -->
     <link type="text/css" href="{{asset('public/css/styles.css')}}" rel="stylesheet">
     <!-- Core CSS with all styles -->
@@ -26,6 +26,7 @@
     <script type="text/javascript" src="{{asset('public/js/placeholder.min.js')}}"></script>
     <![endif]-->
     <!-- jVectorMap -->
-    <link type="text/css" href="{{asset('public/plugins/switchery/switchery.css')}}" rel="stylesheet">   					
+
+    <link type="text/css" href="{{asset('public/plugins/switchery/switchery.css')}}" rel="stylesheet">
     <!-- Switchery -->
 </head>

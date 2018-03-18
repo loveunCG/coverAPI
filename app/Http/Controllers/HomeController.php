@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Model\InsuranceModel;
+use App\User;
+use App\Model\JobsModel;
+use App\Model\AssignJob;
 
 class HomeController extends Controller
 {
@@ -31,7 +34,18 @@ class HomeController extends Controller
         //     Auth::logout();
         //     return redirect('/login');
         // }
-        return view('home');
+        $agent = User::where(['usertype'=>'agent'])->get();
+        $customer = User::where(['usertype'=>'customer'])->get();
+        $jobcount = count(JobsModel::all());
+        $asignjobs = AssignJob::all();
+        $asignJobCount = count($asignjobs);
+        $totalmoney = 0;
+        foreach ($asignjobs as $asignjob) {
+          if($asignjob->quotation){
+            $totalmoney += $asignjob->quotation->quotation_price;
+          }
+        }
+        return view('home',compact('agent','customer','jobcount','totalmoney','asignJobCount'));
     }
     public function adminMg()
     {
