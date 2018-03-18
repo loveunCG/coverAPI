@@ -212,6 +212,17 @@ class ApiAgentController extends Controller
                     ->join('jobs', 'assignJobs.job_id','=','jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id])
                     ->where('assignJobs.jobstatus', '=', null)
+                    ->select('assignJobs.id as assignJobsId',
+                              'assignJobs.agent_id',
+                              'assignJobs.customer_id',
+                              'assignJobs.job_id',
+                              'assignJobs.jobstatus',
+                              'assignJobs.quotation_id',
+                              'assignJobs.created_at',
+                              'assignJobs.updated_at',
+                              'jobs.user_id',
+                              'jobs.name',
+                              'jobs.nric')
                     ->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'All assigned job', 'data' => $job, 'response_code' => 1], 200);
