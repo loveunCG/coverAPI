@@ -45,14 +45,14 @@
             icon: 'fa fa-sign-out',
             buttons: {
                 formSubmit: {
-                    text: '确定',
+                    text: 'OK',
                     btnClass: 'btn-blue',
                     action: function () {
                         $('#logout-form').submit();
                     }
                 },
                 cancel: {
-                    text: '取消',
+                    text: 'Cancel',
                     btnClass: 'btn-green',
                     action: function () {}
                 }
