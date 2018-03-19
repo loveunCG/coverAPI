@@ -156,8 +156,8 @@ class ApiCustomerController extends Controller
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                     $userJob['documents'] = $userJob->document;
                     $userJob['insurance'] = $insuranceData;
+                    $userJobs['quotation'] = $userJob->quotations;
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
-                    $insuranceData->companys;
                     array_push($jobData, $userJob);
                 }
                 if (count($jobData) > 0) {
@@ -176,6 +176,7 @@ class ApiCustomerController extends Controller
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                     $userJob['documents'] = $userJob->document;
                     $userJob['insurance'] = $insuranceData;
+                    $userJobs['quotation'] = $userJob->quotations;
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                     array_push($jobData, $userJob);
                 }
