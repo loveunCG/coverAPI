@@ -454,7 +454,6 @@
                                 $('#admin_idTmp').val($('#tmpAdminId').val());
 
                                 let formData = $('#resetPasswordForm').serialize();
-                                alert(formData);
                                 let strURL = '{{url('agentMg/resetPassword')}}';
                                 $.ajax({
                                     dataType: "json",

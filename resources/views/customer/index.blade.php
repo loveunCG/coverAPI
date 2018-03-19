@@ -650,7 +650,6 @@
         }
 
         function Duplication(params) {
-            alert(params);
             let sendData = {email : params};
             let settings = {
                 "url": "{{url('adminMg/duplicationEmail')}}",

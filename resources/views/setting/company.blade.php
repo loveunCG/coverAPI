@@ -31,7 +31,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Company Name</th>
-                                            <th>Insurance Name</th>
+                                            <th>Company Description</th>
                                             <th>Created Time</th>
                                         </tr>
                                         </thead>
@@ -68,17 +68,6 @@
                         </div>
                         {{ csrf_field() }}
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Insurance Type</label>
-                        <div class="col-md-8">
-                            <select name = "insurance_id" class="form-control">
-                              @foreach ($insurances as $insurance)
-                                  <option value="{{$insurance->id}}">{{$insurance->insurance_name}}</option>
-                              @endforeach
-                            </select>
-                        </div>
-                    </div>
-
                 </form>
             </div>
             <div class="panel-footer">
@@ -111,17 +100,6 @@
                         <label class="col-md-4 control-label">Company Comment</label>
                         <div class="col-md-8">
                             <input type="text" name="company_conment" id="company_conment" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Insurance Type</label>
-                        <div class="col-md-8">
-                            <select name = "insurance_id" id="insurance_id" class="form-control">
-                              @foreach ($insurances as $insurance)
-                                  <option value="{{$insurance->id}}">{{$insurance->insurance_name}}</option>
-                              @endforeach
-                            </select>
                         </div>
                     </div>
                 </form>
@@ -205,7 +183,6 @@
                     // of an input field. Validation rules are defined
                     // on the right side
                     company_name: "required",
-                    insurance_id: "required",
                     company_conment:"required"
                 },
                 // Specify validation error messages
@@ -224,7 +201,6 @@
                     // of an input field. Validation rules are defined
                     // on the right side
                     company_name: "required",
-                    insurance_id: "required",
                     company_conment:"required"
                 },
                 // Specify validation error messages

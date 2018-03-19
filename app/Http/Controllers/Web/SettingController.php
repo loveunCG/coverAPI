@@ -76,7 +76,7 @@ class SettingController extends Controller
                     $company_list['data'][] = array(
                       $i++ . $company_id,
                       $data->company_name,
-                      $data->insurance->insurance_name,
+                      $data->company_conment,
                       $data->created_at->format("Y-m-d h:i:s")
                   );
                 }
@@ -114,8 +114,7 @@ class SettingController extends Controller
     {
         $validator = Validator::make($request->all(), [
           'company_name' => 'required',
-          'company_conment' => 'required',
-          'insurance_id' => 'required'
+          'company_conment' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
@@ -124,7 +123,7 @@ class SettingController extends Controller
         try {
             $saveData['company_name'] = $request->company_name;
             $saveData['company_conment'] = $request->company_conment;
-            $saveData['insurance_id'] = $request->insurance_id;
+            $saveData['insurance_id'] = 1;
             if ($request->has('company_id')) {
                 CompanyModel::findOrFail($request->company_id)->update($saveData);
                 return response()->json(['message' => 'update succesfully!', 'data' => null, 'response_code' => 1], 200);
