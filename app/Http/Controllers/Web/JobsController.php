@@ -21,9 +21,9 @@ class JobsController extends Controller
             if (count($jobs) > 0) {
                 foreach ($jobs as $job) {
                     if ($job->job_status==1) {
-                        $jobStatus = '<a href="#" class="btn btn-primary-alt">Accepted</a>';
+                        $jobStatus = '<a href="#" class="btn btn-primary-alt">Completed</a>';
                     } elseif ($job->job_status==0) {
-                        $jobStatus = '<a href="#" class="btn btn-warning-alt">Un Accepted</a>';
+                        $jobStatus = '<a href="#" class="btn btn-warning-alt">In progreesing</a>';
                     } else {
                         $jobStatus = '<a href="#" class="btn btn-inverse-alt">Rejected</a>';
                     }
