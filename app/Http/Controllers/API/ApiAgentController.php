@@ -175,7 +175,8 @@ class ApiAgentController extends Controller
         try {
             if ($user->usertype == 'agent') {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
-                                ->where(['assignJobs.agent_id' => $user->id])->get();
+                                ->where(['assignJobs.jobstatus' => '1','assignJobs.agent_id' => $user->id])
+                                ->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);
                 } else {
@@ -209,10 +210,11 @@ class ApiAgentController extends Controller
 
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                    ->join('jobs', 'assignJobs.job_id','=','jobs.id')
+                    ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id])
                     ->where('assignJobs.jobstatus', '=', null)
-                    ->select('assignJobs.id as assignJobsId',
+                    ->select(
+                        'assignJobs.id as assignJobsId',
                               'assignJobs.agent_id',
                               'assignJobs.customer_id',
                               'assignJobs.job_id',
@@ -248,7 +250,8 @@ class ApiAgentController extends Controller
                               'users.refferalcode',
                               'users.longitude',
                               'users.latitude',
-                              'users.isAvailable')
+                              'users.isAvailable'
+                    )
                     ->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'All assigned job', 'data' => $job, 'response_code' => 1], 200);
@@ -275,9 +278,10 @@ class ApiAgentController extends Controller
 
         try {
             $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                    ->join('jobs', 'assignJobs.job_id','=','jobs.id')
+                    ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id])
                     ->where('assignJobs.jobstatus', '<>', null)
+                    ->where(['jobs.job_status' => '1'])
                     ->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'Agent History', 'data' => $job, 'response_code' => 1], 200);
