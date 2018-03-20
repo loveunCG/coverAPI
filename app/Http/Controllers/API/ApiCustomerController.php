@@ -12,6 +12,7 @@ use App\User;
 use App\Model\InsuranceModel;
 use JWTAuth;
 use App\Model\CompanyModel;
+use App\Model\QuotationModel;
 
 class ApiCustomerController extends Controller
 {
@@ -156,7 +157,7 @@ class ApiCustomerController extends Controller
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                     $userJob['documents'] = $userJob->document;
                     $userJob['insurance'] = $insuranceData;
-                    $userJobs['quotation'] = $userJob->quotations;
+                    $userJob['quotation'] = QuotationModel::where(['job_id'=>$userJob->job_id])->get();
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                     array_push($jobData, $userJob);
                 }
@@ -176,7 +177,7 @@ class ApiCustomerController extends Controller
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                     $userJob['documents'] = $userJob->document;
                     $userJob['insurance'] = $insuranceData;
-                    $userJobs['quotation'] = $userJob->quotations;
+                    $userJob['quotation'] = QuotationModel::where(['job_id'=>$userJob->job_id])->get();
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                     array_push($jobData, $userJob);
                 }
