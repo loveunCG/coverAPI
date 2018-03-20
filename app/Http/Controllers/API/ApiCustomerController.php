@@ -181,7 +181,7 @@ class ApiCustomerController extends Controller
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
                     $userJob['documents'] = DocumentsModel::where(['job_id'=>$userJob->job_id])->get();
                     $userJob['insurance'] = $insuranceData;
-                    $userJob['quotation'] = QuotationModel::where(['agent_id'=>$user->id, 'job_id'=>$userJob->job_id])->first();
+                    $userJob['quotation'] = QuotationModel::where(['job_id'=>$userJob->job_id])->first();
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                     array_push($jobData, $userJob);
                 }

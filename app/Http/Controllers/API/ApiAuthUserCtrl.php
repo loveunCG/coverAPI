@@ -182,6 +182,7 @@ class ApiAuthUserCtrl extends Controller
         $postcode = ($request->postcode != null) ? $request->postcode : $user->postcode;
         $state = ($request->state != null) ? $request->state : $user->state;
         $country = ($request->country != null) ? $request->country : $user->country;
+        $photo = ($request->photo != null) ? $request->photo : $user->image;
         $user->username = $username;
         $user->email = $email;
         $user->username = $username;
@@ -192,11 +193,8 @@ class ApiAuthUserCtrl extends Controller
         $user->postcode = $postcode;
         $user->state = $state;
         $user->country = $country;
+        $user->image = $photo;
         try {
-            if ($request->hasFile('photo') > 0) {
-                $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
-                $user->image = $photo;
-            }
             if ($user->save()) {
                 return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
             } else {
