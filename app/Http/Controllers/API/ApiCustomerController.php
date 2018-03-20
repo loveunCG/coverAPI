@@ -98,7 +98,7 @@ class ApiCustomerController extends Controller
         $phone = $request->phoneno;
         $instype = $request->insurencetype;
         $sum = $request->indicative_sum;
-        $addres = $request->address;
+        $address = $request->address;
         $pcode = $request->postcode;
         $state = $request->state;
         $country = $request->country;
@@ -112,7 +112,7 @@ class ApiCustomerController extends Controller
         $jobmodel->phoneno = $phone;
         $jobmodel->insurance_type = $instype;
         $jobmodel->indicative_sum = $sum;
-        $jobmodel->address = $addres;
+        $jobmodel->address = $address;
         $jobmodel->postcode = $pcode;
         $jobmodel->state = $state;
         $jobmodel->country = $country;
@@ -151,6 +151,8 @@ class ApiCustomerController extends Controller
                 $userJobs = JobsModel::join('users', 'users.id', '=', 'jobs.user_id')
                 ->select()
                 ->addSelect('jobs.id as job_id')
+                ->addSelect('jobs.address as job_address')
+                ->addSelect('users.address as usr_address')
                 ->get();
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
@@ -171,6 +173,8 @@ class ApiCustomerController extends Controller
                   ->where(['user_id' => $user->id])
                   ->select()
                   ->addSelect('jobs.id as job_id')
+                  ->addSelect('jobs.address as job_address')
+                  ->addSelect('users.address as usr_address')
                   ->get();
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
