@@ -40,8 +40,8 @@ class ApiAuthUserCtrl extends Controller
             'devicename' => 'required|string|max:255',
             'usertype' => 'required|string|max:255',
             'devicetoken' => 'required|string|max:255',
-            'latitude' => 'required|numeric|between:0,99.99',
-            'longitude' => 'required|numeric|between:0,99.99',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
             'verifyToken' => 'required|string|max:255'
         ], $messages);
     }
@@ -193,19 +193,18 @@ class ApiAuthUserCtrl extends Controller
         $user->state = $state;
         $user->country = $country;
         try {
-          if ($request->hasFile('photo') > 0) {
-              $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
-              $user->image = $photo;
-          }
-          if ($user->save()) {
-              return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
-
-          } else {
-              return response()->json(['message' => 'updation problem occure ', 'data' => null, 'response_code' => 0], 200);
-          }
+            if ($request->hasFile('photo') > 0) {
+                $photo = ($request->hasFile('photo') != null) ? asset('/').'storage/app/'.((Storage::disk('local')->put('/public/photos', $request->photo))): $user->image;
+                $user->image = $photo;
+            }
+            if ($user->save()) {
+                return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
+            } else {
+                return response()->json(['message' => 'updation problem occure ', 'data' => null, 'response_code' => 0], 200);
+            }
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
-      }
+        }
     }
 
     public function checkPhoneVerify(Request $request)
@@ -239,14 +238,14 @@ class ApiAuthUserCtrl extends Controller
         }
     }
 
-    public function getcompany(){
-      $user = JWTAuth::parseToken()->authenticate();
-      $companys = CompanyModel::all();
-      try {
-          return response()->json(['message' => 'get company infomation', 'data' => $companys, 'response_code' => 1], 200);
-      } catch (\Exception $e) {
-          return response()->json(['message' => 'getting is failed', 'data' => $e, 'response_code' => 0], 200);
-      }
-
+    public function getcompany()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $companys = CompanyModel::all();
+        try {
+            return response()->json(['message' => 'get company infomation', 'data' => $companys, 'response_code' => 1], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'getting is failed', 'data' => $e, 'response_code' => 0], 200);
+        }
     }
 }

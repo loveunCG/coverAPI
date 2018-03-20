@@ -155,9 +155,9 @@ class ApiCustomerController extends Controller
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
-                    $userJob['documents'] = $userJob->document;
+                    $userJob['documents'] = DocumentsModel::where(['job_id'=>$userJob->job_id])->get();
                     $userJob['insurance'] = $insuranceData;
-                    $userJob['quotation'] = QuotationModel::where(['job_id'=>$userJob->job_id])->get();
+                    $userJob['quotation'] = QuotationModel::where(['agent_id'=>$user->id, 'job_id'=>$userJob->job_id])->first();
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                     array_push($jobData, $userJob);
                 }
@@ -175,9 +175,9 @@ class ApiCustomerController extends Controller
                 $jobData = array();
                 foreach ($userJobs as $userJob) {
                     $insuranceData = InsuranceModel::findOrFail($userJob['insurance_type']);
-                    $userJob['documents'] = $userJob->document;
+                    $userJob['documents'] = DocumentsModel::where(['job_id'=>$userJob->job_id])->get();
                     $userJob['insurance'] = $insuranceData;
-                    $userJob['quotation'] = QuotationModel::where(['job_id'=>$userJob->job_id])->get();
+                    $userJob['quotation'] = QuotationModel::where(['agent_id'=>$user->id, 'job_id'=>$userJob->job_id])->first();
                     $userJob['company'] = CompanyModel::findOrFail($userJob->company_id);
                     array_push($jobData, $userJob);
                 }
