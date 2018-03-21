@@ -123,28 +123,41 @@ class JobsController extends Controller
         } else {
             $quotations = QuotationModel::all();
         }
-        if (count($quotations)>0) {
-            $i = 1;
-            foreach ($quotations as $quotation) {
-                $send_data['data'][]=[
-                  $i++,
-                  $quotation->agent->username,
-                  $quotation->quotation_price,
-                  $quotation->quotation_description,
-                  $quotation->jobs->job_status
-                ];
+        try {
+            if (count($quotations)>0) {
+                $i = 1;
+                foreach ($quotations as $quotation) {
+                    $send_data['data'][]=[
+                    $i++,
+                    $quotation->agent->username,
+                    $quotation->quotation_price,
+                    $quotation->quotation_description,
+                    $quotation->jobs->job_status
+                  ];
+                }
+            } else {
+                $send_data['data'][0]=[
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
+              ];
             }
-        } else {
+        } catch (\Exception $e) {
             $send_data['data'][0]=[
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-              '',
-              ''
-            ];
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+          ];
         }
         return response()->json($send_data);
     }
