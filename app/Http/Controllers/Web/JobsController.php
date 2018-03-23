@@ -28,20 +28,26 @@ class JobsController extends Controller
                         $jobStatus = '<a href="#" class="btn btn-inverse-alt">Rejected</a>';
                     }
                     $job_id = '<input type="hidden" class="job_id" value="' . $job->id . '">';
-
+                    try {
+                        $insurance_name = InsuranceModel::findOrFail($job->insurance_type)->insurance_name;
+                        $user_name = User::findOrFail($job->user_id)->username;
+                    } catch (\Exception $e) {
+                        $user_name = "undefinded";
+                        $insurance_name = "undefinded";
+                    }
                     $job_list['data'][] = array(
-                  $i++.$job_id,
-                  $job->name,
-                  $job->nric,
-                  InsuranceModel::findOrFail($job->insurance_type)->insurance_name,
-                  $job->indicative_sum,
-                  $job->address,
-                  $job->postcode,
-                  $job->state,
-                  $job->expired_date,
-                  User::findOrFail($job->user_id)->username,
-                  $jobStatus,
-                );
+                      $i++.$job_id,
+                      $job->name,
+                      $job->nric,
+                      $insurance_name,
+                      $job->indicative_sum,
+                      $job->address,
+                      $job->postcode,
+                      $job->state,
+                      $job->expired_date,
+                      $user_name,
+                      $jobStatus,
+                    );
                 }
             } else {
                 $job_list['data'][0] = array(
@@ -72,7 +78,7 @@ class JobsController extends Controller
             ' ',
             ' '
           );
-            return response()->json($e);
+            return response()->json($job_list);
         }
         return response()->json($job_list);
     }
