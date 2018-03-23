@@ -133,7 +133,6 @@
         </div>
     </div>
 
-    <input type="hidden" id="tmpAdminId" />
 
     <div id="editAgentUser" data-iziModal-title="Edit Agent Account"  data-iziModal-icon="icon-home">
         <div class="panel panel-info">
@@ -146,6 +145,8 @@
                         <label class="col-md-3 control-label">AgentName</label>
                         <div class="col-md-9">
                             <input type="text" name="agentName" id="agentName" class="form-control">
+                            <input type="hidden" name="user_id" id="tmpAdminId" />
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -164,7 +165,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Address</label>
                         <div class="col-md-9">
-                            <input type="text" name="address" class="form-control">
+                            <input type="text" name="address" id="address" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -382,6 +383,7 @@
                                                 }
                                             }
                                         });
+                                    }else{
                                     }
                                 });
                             }
@@ -560,7 +562,7 @@
                 "method": "POST"
             };
             $.ajax(settings).done(function (response) {
-                if (response.status) {
+                if (response.response_code) {
                     $.alert({
                         title: 'Ok!',
                         content: 'Create successfully!',
@@ -582,13 +584,16 @@
 
             let formData = $('#editAgentAccount').serialize();
             let settings = {
-                "url": "{{url('adminMg/update')}}",
+                "url": "{{url('agentMg/update')}}",
                 "dataType": "json",
                 "data": formData,
                 "method": "POST"
             };
+            console.log(formData);
             $.ajax(settings).done(function (response) {
-                if (response.status) {
+              console.log(response);
+
+                if (response.response_code) {
                     $.alert({
                         title: 'Ok!',
                         content: 'Update successfully!',

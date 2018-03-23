@@ -39,7 +39,7 @@ Route::group(['middleware' => ['auth:admin'], 'prefix' => 'custom', 'as' => 'cus
     Route::get('/getCustomTableInfo', 'Web\UserController@getCustomTableInfo');
     Route::get('/getCustomDetailInfo/{id?}', 'Web\UserController@getCustomDetailInfo');
     Route::post('/resetPassword', 'Web\UserController@resetPassword');
-    Route::post('/removeCustomter', 'Web\UserController@removeCustomer');
+    Route::post('/removeCustomter', 'Web\UserController@removeAgent');
 });
 // setting module
 

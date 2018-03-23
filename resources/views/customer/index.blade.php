@@ -163,7 +163,7 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Address</label>
                         <div class="col-md-9">
-                            <input type="text" name="address" class="form-control">
+                            <input type="text" name="address" id="address" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -182,13 +182,13 @@
                         <label class="col-md-3 control-label">country</label>
                         <div class="col-md-9">
                             <input type="text" name="country" id="country" class="form-control">
-                            <input type="hidden" name="customer_id" id="tmpcustomerId">
+                            <input type="hidden" name="user_id" id="tmpcustomerId">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Customer status</label>
                         <div class="col-md-9">
-                            <select name = "customer_status" id="customer_status" class="form-control">
+                            <select name = "agent_status" id="customer_status" class="form-control">
                                 <option value="1">active</option>
                                 <option value="0">disactive</option>
                             </select>
@@ -475,11 +475,8 @@
                                     type: 'POST',
                                     data: formData,
                                     success: function (response) {
-                                        if(response.status){
-                                            $.alert('Reset Password Successfully!');
-
-                                        }else if(response.status == 'no password'){
-                                            $.alert('Please insert correct Password!');
+                                        if(response.response_code){
+                                            $.alert(response.message);
                                         }
                                         resetButton();
                                     }
@@ -594,13 +591,13 @@
 
             let formData = $('#editCustomerAccount').serialize();
             let settings = {
-                "url": "{{url('adminMg/update')}}",
+                "url": "{{url('agentMg/update')}}",
                 "dataType": "json",
                 "data": formData,
                 "method": "POST"
             };
             $.ajax(settings).done(function (response) {
-                if (response.status) {
+                if (response.response_code) {
                     $.alert({
                         title: 'Ok!',
                         content: 'Update successfully!',

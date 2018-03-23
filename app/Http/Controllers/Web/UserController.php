@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -104,12 +105,21 @@ class UserController extends Controller
             'country'=>$request->country,
             'status'=>$request->agent_status,
         );
+        try {
+            $user = User::where(['id'=>$request->user_id])->update($updateData);
+            return response()->json(['message' => 'Update successfully!', 'data' => $user, 'response_code' => 1], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Update Fail!', 'data' => $e, 'response_code' => 0], 200);
+        }
     }
 
     public function removeAgent(Request $request)
     {
         try {
             if ($request->adminUpdateID) {
+                User::findOrFail($request->adminUpdateID)->delete();
+                return response()->json(array('status'=>true));
+            } elseif ($request->adminUpdateID) {
                 User::findOrFail($request->adminUpdateID)->delete();
                 return response()->json(array('status'=>true));
             } else {
