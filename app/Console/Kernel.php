@@ -5,7 +5,7 @@
 namespace App\Console;
 
 use Illuminate\Support\Facades\Storage;
-
+use App\Model\JobsModel;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -32,11 +32,17 @@ class Kernel extends ConsoleKernel
     {
         $this->count++;
         $schedule->call(function () {
-            Storage::disk('local')->put('file.txt', $this->count);
         })->everyMinute();
 
         // $schedule->command('inspire')
         //          ->hourly();
+    }
+
+    public function expiredJob()
+    {
+        $jobs = JobsModel::all();
+        foreach ($jobs as $job) {
+        }
     }
 
     /**
