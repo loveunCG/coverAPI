@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        'App\Console\Commands\NotificationCronJobCommand',
         //
     ];
 
@@ -33,7 +34,6 @@ class Kernel extends ConsoleKernel
         $this->count++;
         $schedule->call(function () {
         })->everyMinute();
-
         // $schedule->command('inspire')
         //          ->hourly();
     }
