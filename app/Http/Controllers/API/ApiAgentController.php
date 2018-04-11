@@ -34,7 +34,6 @@ class ApiAgentController extends Controller
 		                   * cos(radians(users.longitude) - radians(" . $lon . "))
 		                 + sin(radians(" . $lat . "))
 		                 * sin(radians(users.latitude))) AS distance"))
-                            ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
                             ->orderBy('distance', 'desc')
                             ->take(3)
                             ->get();
@@ -348,6 +347,25 @@ class ApiAgentController extends Controller
                                 ->where(['jobs.user_id' => $user->id])->get();
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
+        }
+    }
+
+    //RENEW project
+    public function renewJob(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$request->has('jobid')) {
+            return response()->json(['message' => 'Submit Error', 'data' => null, 'response_code' => 0], 200);
+        }
+        try {
+          $ojob = JobsModel::where(['id'=>$request->jobid])->first();
+          $exp_d = $ojob->expired_date;
+          $new_date = strtotime('+ 1 year', $exp_d);
+          $ojob->expired_date = $new_date;
+          $ojob->update();
+          return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
 }
