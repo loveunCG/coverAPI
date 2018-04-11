@@ -355,13 +355,14 @@ class ApiAgentController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         if (!$request->has('jobid')) {
-            return response()->json(['message' => 'Submit Error', 'data' => null, 'response_code' => 0], 200);
+            return response()->json(['message' => 'No jobid', 'data' => null, 'response_code' => 0], 200);
         }
         try {
           $ojob = JobsModel::where(['id'=>$request->jobid])->first();
-          $exp_d = $ojob->expired_date;
-          $new_date = strtotime('+ 1 year', $exp_d);
-          $ojob->expired_date = $new_date;
+          $format = 'Y-m-d H:i:s';
+          $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
+          $exp_d->modify('+1 year');
+          $ojob->expired_date = $exp_d;
           $ojob->update();
           return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
