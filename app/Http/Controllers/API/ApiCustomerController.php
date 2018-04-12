@@ -228,11 +228,11 @@ class ApiCustomerController extends Controller
         if ($user->usertype == "agent") {
             return response()->json(['message' => 'must be customer', 'data' => null, 'response_code' => 0], 200);
         }
-        if ($request->has('jobId')) {
+        if ($request->has('jobId') && $request->has('user_id')) {
             try {
                 $documents = DocumentsModel::where(['job_id' => $request->jobId,'user_id' => $request->user_id])->get();
                 if (count($userJobs) > 0) {
-                    return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
+                    return response()->json(['message' => 'Documents', 'data' => $documents, 'response_code' => 1], 200);
                 } else {
                     return response()->json(['message' => 'No Documents', 'data' => null, 'response_code' => 0], 200);
                 }
