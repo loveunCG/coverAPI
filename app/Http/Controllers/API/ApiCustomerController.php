@@ -221,6 +221,29 @@ class ApiCustomerController extends Controller
         }
     }
 
+    //GET Quot document
+    public function getQuotDocument(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->usertype == "agent") {
+            return response()->json(['message' => 'must be customer', 'data' => null, 'response_code' => 0], 200);
+        }
+        if ($request->has('jobId')) {
+            try {
+                $documents = DocumentsModel::where(['job_id' => $request->jobId,'user_id' => $request->user_id])->get();
+                if (count($userJobs) > 0) {
+                    return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
+                } else {
+                    return response()->json(['message' => 'No Documents', 'data' => null, 'response_code' => 0], 200);
+                }
+            } catch (\Exception $exception) {
+                return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
+            }
+        } else {
+            return response()->json(['message' => 'job id not given', 'data' => null, 'response_code' => 0], 200);
+        }
+    }
+    
     public function getInsuranceType(Request $request)
     {
         if (!empty($request->insurId)) {
