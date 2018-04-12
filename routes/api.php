@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'jobs', 'as' => 'jobs.']
     Route::post('show', 'API\ApiCustomerController@fetchJob');
     Route::post('getInsuranceType', 'API\ApiCustomerController@getInsuranceType');
     Route::post('jobDetail', 'API\ApiCustomerController@jobDetail');
+    Route::post('getQuotDocument', 'API\ApiCustomerController@getQuotDocument');
     Route::post('/handover', 'API\ApiAgentController@handOverJob');
     Route::post('/view', 'API\ApiAgentController@assignedJobView');
     Route::post('/action', 'API\ApiAgentController@jobAction');
