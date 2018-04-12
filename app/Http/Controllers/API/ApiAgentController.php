@@ -320,6 +320,14 @@ class ApiAgentController extends Controller
                 $ajob = AssignJob::findOrFail($request->assign_id);
                 $ajob->quotation_id = $question->id;
                 $ajob->save();
+		// Update documents table
+                foreach ($request->documents as $docurl) {
+                    $document = new DocumentsModel();
+                    $document->user_id = $userid;
+                    $document->job_id = $jobmodel->id;
+                    $document->fileName = $docurl;
+                    $document->save();
+                }
                 return response()->json(['message' => 'Successfully added quotation', 'data' => $question, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'Addition is failed', 'data' => null, 'response_code' => 0], 200);
