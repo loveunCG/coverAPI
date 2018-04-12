@@ -324,8 +324,8 @@ class ApiAgentController extends Controller
 		// Update documents table
                 foreach ($request->documents as $docurl) {
                     $document = new DocumentsModel();
-                    $document->user_id = $userid;
-                    $document->job_id = $jobmodel->id;
+                    $document->user_id = $user->id;
+                    $document->job_id = $request->job_id;
                     $document->fileName = $docurl;
                     $document->save();
                 }
