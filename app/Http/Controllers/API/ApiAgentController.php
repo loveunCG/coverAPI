@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\AssignJob;
 use App\Model\JobsModel;
 use App\Model\QuotationModel;
+use App\Model\DocumentsModel;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
