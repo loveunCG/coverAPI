@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\AssignJob;
 use App\Model\JobsModel;
 use App\Model\QuotationModel;
+use App\Model\DocumentsModel;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -34,8 +35,6 @@ class ApiAgentController extends Controller
 		                   * cos(radians(users.longitude) - radians(" . $lon . "))
 		                 + sin(radians(" . $lat . "))
 		                 * sin(radians(users.latitude))) AS distance"))
-                            ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
-                            ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
                             ->orderBy('distance', 'desc')
                             ->take(3)
                             ->get();
@@ -322,6 +321,14 @@ class ApiAgentController extends Controller
                 $ajob = AssignJob::findOrFail($request->assign_id);
                 $ajob->quotation_id = $question->id;
                 $ajob->save();
+		// Update documents table
+                foreach ($request->documents as $docurl) {
+                    $document = new DocumentsModel();
+                    $document->user_id = $user->id;
+                    $document->job_id = $request->job_id;
+                    $document->fileName = $docurl;
+                    $document->save();
+                }
                 return response()->json(['message' => 'Successfully added quotation', 'data' => $question, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'Addition is failed', 'data' => null, 'response_code' => 0], 200);
@@ -349,6 +356,26 @@ class ApiAgentController extends Controller
                                 ->where(['jobs.user_id' => $user->id])->get();
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
+        }
+    }
+
+    //RENEW project
+    public function renewJob(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$request->has('jobid')) {
+            return response()->json(['message' => 'No jobid', 'data' => null, 'response_code' => 0], 200);
+        }
+        try {
+          $ojob = JobsModel::where(['id'=>$request->jobid])->first();
+          $format = 'Y-m-d H:i:s';
+          $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
+          $exp_d->modify('+1 year');
+          $ojob->expired_date = $exp_d;
+          $ojob->update();
+          return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
     }
 }
