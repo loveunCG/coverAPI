@@ -12,6 +12,7 @@ use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use JWTAuth;
+use DateTime;
 
 class ApiAgentController extends Controller
 {
@@ -31,10 +32,12 @@ class ApiAgentController extends Controller
                     }
                     $agents = DB::table("users")
                             ->select("users.*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
-		                     * cos(radians(users.latitude))
-		                   * cos(radians(users.longitude) - radians(" . $lon . "))
-		                 + sin(radians(" . $lat . "))
-		                 * sin(radians(users.latitude))) AS distance"))
+                         * cos(radians(users.latitude))
+                       * cos(radians(users.longitude) - radians(" . $lon . "))
+                     + sin(radians(" . $lat . "))
+                     * sin(radians(users.latitude))) AS distance"))
+                            ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
+                            ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
                             ->orderBy('distance', 'desc')
                             ->take(3)
                             ->get();
@@ -147,6 +150,47 @@ class ApiAgentController extends Controller
                 $action->agent_id = $user->id;
                 $action->customer_id = $request->costomerId;
                 $action->save();
+            }
+            if ($action->id) {
+                return response()->json(['message' => 'This job is updated', 'data' => $action, 'response_code' => 1], 200);
+            } else {
+                return response()->json(['message' => 'This job status is not updated', 'data' => null, 'response_code' => 0], 200);
+            }
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
+        }
+        return response()->json(['message' => 'Some fields missing', 'data' => null, 'response_code' => 0], 200);
+    }
+
+    /**
+     *
+     *
+     * Update customer accept agent
+     *
+     *
+     */
+    public function acceptAgent(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->usertype == 'agent') {
+            return response()->json(['message' => 'You must be customer', 'data' => null, 'response_code' => 0], 200);
+        }
+        $validator = Validator::make($request->all(), [
+                    'status' => 'required',
+                    'jobid' => 'required',
+                    'agentId' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Some fields missing', 'data' => $validator->errors(), 'response_code' => 0], 200);
+        }
+
+        try {
+            if ($ajob = AssignJob::where(['job_id'=>$request->jobid,'agent_id'=>$request->agentId,'customer_id'=>$user->id,])->first()) {
+                $ajob->jobstatus = $request->status;
+                $ajob->update();
+                $action = $ajob;
+            } else {
+                return response()->json(['message' => 'There is not that job', 'data' => null, 'response_code' => 0], 200);
             }
             if ($action->id) {
                 return response()->json(['message' => 'This job is updated', 'data' => $action, 'response_code' => 1], 200);
@@ -321,7 +365,7 @@ class ApiAgentController extends Controller
                 $ajob = AssignJob::findOrFail($request->assign_id);
                 $ajob->quotation_id = $question->id;
                 $ajob->save();
-		// Update documents table
+                // Update documents table
                 foreach ($request->documents as $docurl) {
                     $document = new DocumentsModel();
                     $document->user_id = $user->id;
@@ -353,6 +397,7 @@ class ApiAgentController extends Controller
                 return response()->json(['message' => 'Get quotation list by agent id', 'data' => $quotations, 'response_code' => 1], 200);
             } else {
                 $quotations = JobsModel::join('quotations', 'jobs.id', '=', 'quotations.job_id')
+                ->join('assignJobs', 'jobs.id', '=', 'assignJobs.job_id')
                                 ->where(['jobs.user_id' => $user->id])->get();
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
