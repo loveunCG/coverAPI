@@ -208,6 +208,7 @@ class ApiCustomerController extends Controller
                 $userJobs['documents'] = $documents;
                 $userJobs['insurance_id'] = $insuranceData->id;
                 $userJobs['insurance_name'] = $insuranceData->insurance_name;
+                    return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
                 if (count($userJobs) > 0) {
                     return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
                 } else {
@@ -231,7 +232,7 @@ class ApiCustomerController extends Controller
         if ($request->has('jobId') && $request->has('user_id')) {
             try {
                 $documents = DocumentsModel::where(['job_id' => $request->jobId,'user_id' => $request->user_id])->get();
-                if (count($userJobs) > 0) {
+                if (count($documents) > 0) {
                     return response()->json(['message' => 'Documents', 'data' => $documents, 'response_code' => 1], 200);
                 } else {
                     return response()->json(['message' => 'No Documents', 'data' => null, 'response_code' => 0], 200);
@@ -240,10 +241,10 @@ class ApiCustomerController extends Controller
                 return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
             }
         } else {
-            return response()->json(['message' => 'job id not given', 'data' => null, 'response_code' => 0], 200);
+            return response()->json(['message' => 'jobId or user_id not given', 'data' => null, 'response_code' => 0], 200);
         }
     }
-    
+
     public function getInsuranceType(Request $request)
     {
         if (!empty($request->insurId)) {
