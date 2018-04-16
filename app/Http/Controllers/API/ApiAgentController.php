@@ -511,11 +511,18 @@ class ApiAgentController extends Controller
         }
         try {
           $ojob = JobsModel::where(['id'=>$request->jobid])->first();
+          $ojob->jobstatus = 0;
           $format = 'Y-m-d H:i:s';
           $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
           $exp_d->modify('+1 year');
           $ojob->expired_date = $exp_d;
-          $ojob->update();
+          $ojob->save();
+          $ajob = new AssignJob();
+          $ajob->agent_id = $request->agent_id;
+          $ajob->customer_id = $user->id;
+          $ajob->job_id = $ojob->id;
+          $result = $ajob->save();
+          //$ojob->update();
           return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
