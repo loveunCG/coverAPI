@@ -430,6 +430,9 @@ class ApiAgentController extends Controller
                 $ajob = AssignJob::findOrFail($request->assign_id);
                 $ajob->quotation_id = $question->id;
                 $ajob->save();
+                $job = JobsModel::where("id", "=", $request->job_id)->get()->first();
+                $job->quotation_price = $request->quotation_price;
+                $job->update();
                 // Update documents table
                 foreach ($request->documents as $docurl) {
                     $document = new DocumentsModel();
