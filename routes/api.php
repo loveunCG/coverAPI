@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'jobs', 'as' => 'jobs.']
     Route::post('/acceptedJobList', 'API\ApiAgentController@acceptedJobList');
     Route::post('/renewJob', 'API\ApiAgentController@renewJob');
     Route::post('/completeJob', 'API\ApiAgentController@completeJob');
+    Route::post('/customerGetCompletedJob', 'API\ApiAgentController@customerGetCompletedJob');
 });
 
 Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.'], function () {

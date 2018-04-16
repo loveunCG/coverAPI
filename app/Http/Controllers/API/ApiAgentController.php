@@ -401,6 +401,36 @@ class ApiAgentController extends Controller
         }
     }
 
+    /**
+     *
+     *
+     *
+     *
+     * Get Completed Job list by Customer
+     *
+     *
+     *
+     */
+    public function customerGetCompletedJob(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        try {
+            $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
+                    ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
+                    ->where(['assignJobs.customer_id' => $user->id])
+                    ->where('assignJobs.jobstatus', '=', '4')
+                    ->where(['jobs.job_status' => '1'])
+                    ->get();
+            if (count($job) > 0) {
+                return response()->json(['message' => 'Agent Completed Jobs for this customer', 'data' => $job, 'response_code' => 1], 200);
+            } else {
+                return response()->json(['message' => 'No job is completed by this agent', 'data' => null, 'response_code' => 0], 200);
+            }
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
+        }
+    }
+
     //----------------------quotaion Modules
     // add quotation to jobs.
     public function addQuotation(Request $request)
