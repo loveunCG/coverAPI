@@ -165,6 +165,40 @@ class ApiAgentController extends Controller
     /**
      *
      *
+     * Update job status 1 :: It's complete
+     *
+     *
+     */
+    public function completeJob(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->usertype == 'customer') {
+            return response()->json(['message' => 'You must be agent', 'data' => null, 'response_code' => 0], 200);
+        }
+        $validator = Validator::make($request->all(), [
+                    'jobid' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Some fields missing', 'data' => $validator->errors(), 'response_code' => 0], 200);
+        }
+
+        try {
+          $job = JobsModel::where('id', '=', $request->jobid)->first();
+          $job->job_status = 1;
+          $job->update();
+          $ajob = AssignJob::where(["job_id" => $job->id, "agent_id" => $user->id])->get()->first();
+          $ajob->jobstatus = 4;
+          $ajob->update();
+          return response()->json(['message' => 'Complete this job success', 'response_code' => 1], 200);
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'response_code' => 0], 500);
+        }
+        return response()->json(['message' => 'Some fields missing', 'response_code' => 0], 200);
+    }
+
+    /**
+     *
+     *
      * Update customer accept agent
      *
      *
@@ -227,7 +261,7 @@ class ApiAgentController extends Controller
                 }
             } else {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
-                                ->where(['assignJobs.customer_id' => $user->id])->get();
+                                ->where(['assignJobs.customer_id' => $user->id , 'assignJobs.jobstatus' => '1'])->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);
                 } else {
@@ -328,6 +362,37 @@ class ApiAgentController extends Controller
                     ->get();
             if (count($job) > 0) {
                 return response()->json(['message' => 'Agent History', 'data' => $job, 'response_code' => 1], 200);
+            } else {
+                return response()->json(['message' => 'No job is completed by this agent', 'data' => null, 'response_code' => 0], 200);
+            }
+        } catch (\Exception $exception) {
+            return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
+        }
+    }
+
+
+    /**
+     *
+     *
+     *
+     *
+     * Get Completed Job list
+     *
+     *
+     *
+     */
+    public function agentCompletedJob(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        try {
+            $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
+                    ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
+                    ->where(['assignJobs.agent_id' => $user->id])
+                    ->where('assignJobs.jobstatus', '=', '4')
+                    ->where(['jobs.job_status' => '1'])
+                    ->get();
+            if (count($job) > 0) {
+                return response()->json(['message' => 'Agent Completed Jobs', 'data' => $job, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'No job is completed by this agent', 'data' => null, 'response_code' => 0], 200);
             }
