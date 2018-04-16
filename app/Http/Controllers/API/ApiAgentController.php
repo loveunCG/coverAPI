@@ -511,18 +511,30 @@ class ApiAgentController extends Controller
         }
         try {
           $ojob = JobsModel::where(['id'=>$request->jobid])->first();
-          $ojob->jobstatus = 0;
+          // create jobs transaction record
+          $jobmodel = new JobsModel();
+          $jobmodel->user_id = $user->id;
+          $jobmodel->name = $ojob->name;
+          $jobmodel->nric = $ojob->nric;
+          $jobmodel->phoneno = $ojob->phoneno;
+          $jobmodel->insurance_type = $ojob->insurance_type;
+          $jobmodel->indicative_sum = $ojob->indicative_sum;
+          $jobmodel->address = $ojob->address;
+          $jobmodel->postcode = $ojob->postcode;
+          $jobmodel->state = $ojob->state;
+          $jobmodel->country = $ojob->country;
+          $jobmodel->job_status = 0;
+          $jobmodel->company_id = $ojob->company_id;
           $format = 'Y-m-d H:i:s';
           $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
           $exp_d->modify('+1 year');
-          $ojob->expired_date = $exp_d;
-          $ojob->save();
+          $jobmodel->expired_date = $exp_d;
+          $jobmodel->save();
           $ajob = new AssignJob();
           $ajob->agent_id = $request->agent_id;
           $ajob->customer_id = $user->id;
           $ajob->job_id = $ojob->id;
           $result = $ajob->save();
-          //$ojob->update();
           return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
