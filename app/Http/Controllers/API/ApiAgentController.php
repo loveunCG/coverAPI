@@ -512,7 +512,7 @@ class ApiAgentController extends Controller
         try {
           $ojob = JobsModel::where(['id'=>$request->jobid])->first();
           // create jobs transaction record
-          $jobmodel = new JobsModel();
+          /*($jobmodel = new JobsModel();
           $jobmodel->user_id = $user->id;
           $jobmodel->name = $ojob->name;
           $jobmodel->nric = $ojob->nric;
@@ -525,11 +525,18 @@ class ApiAgentController extends Controller
           $jobmodel->country = $ojob->country;
           $jobmodel->job_status = 0;
           $jobmodel->company_id = $ojob->company_id;
+          $jobmodel->quotation_price = $ojob->quotation_price;
           $format = 'Y-m-d H:i:s';
           $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
           $exp_d->modify('+1 year');
           $jobmodel->expired_date = $exp_d;
-          $jobmodel->save();
+          $jobmodel->save();*/
+          $format = 'Y-m-d H:i:s';
+          $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
+          $exp_d->modify('+1 year');
+          $ojob->expired_date = $exp_d;
+          $ojob->job_status = 0;
+          $ojob->save();
           $ajob = new AssignJob();
           $ajob->agent_id = $request->agent_id;
           $ajob->customer_id = $user->id;
