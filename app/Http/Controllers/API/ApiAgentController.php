@@ -36,8 +36,9 @@ class ApiAgentController extends Controller
                        * cos(radians(users.longitude) - radians(" . $lon . "))
                      + sin(radians(" . $lat . "))
                      * sin(radians(users.latitude))) AS distance"))
+                            ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
                             ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
-                            ->orderBy('distance', 'desc')
+                            ->orderBy('distance', 'asc')
                             ->take(3)
                             ->get();
                     return response()->json(['message' => 'Nearest agents', 'data' => $agents, 'response_code' => 1], 200);
