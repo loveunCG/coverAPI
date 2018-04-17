@@ -36,7 +36,7 @@ class ApiAgentController extends Controller
                        * cos(radians(users.longitude) - radians(" . $lon . "))
                      + sin(radians(" . $lat . "))
                      * sin(radians(users.latitude))) AS distance"))
-                            ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
+                            ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
                             ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
                             ->orderBy('distance', 'desc')
                             ->take(3)
