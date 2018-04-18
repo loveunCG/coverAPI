@@ -456,6 +456,25 @@ class ApiAgentController extends Controller
         );
 
         try {
+            $quot = QuotationModel::where(['agent_id' => $user->id, 'job_id' => $request->job_id ])
+            ->get();
+            if (count($quot) > 0) {
+                $quot[0]->quotation_price = $request->quotation_price;
+                $quot[0]->quotation_description = $request->quotation_description;
+                $quot[0]->save();
+                $job = JobsModel::where("id", "=", $request->job_id)->get()->first();
+                $job->quotation_price = $request->quotation_price;
+                $job->update();
+                // Update documents table
+                foreach ($request->documents as $docurl) {
+                    $document = new DocumentsModel();
+                    $document->user_id = $user->id;
+                    $document->job_id = $request->job_id;
+                    $document->fileName = $docurl;
+                    $document->save();
+                }
+                return response()->json(['message' => 'Successfully update quotation', 'data' => $quot[0], 'response_code' => 1], 200);
+            }
             if ($question = QuotationModel::create($save_data)) {
                 $ajob = AssignJob::findOrFail($request->assign_id);
                 $ajob->quotation_id = $question->id;
@@ -537,11 +556,14 @@ class ApiAgentController extends Controller
           $ojob->expired_date = $exp_d;
           $ojob->job_status = 0;
           $ojob->save();
-          $ajob = new AssignJob();
+          $ajob = AssignJob::where(['job_id'=>$ojob->id,'agent_id'=>$request->agent_id,'customer_id'=>$user->id,])->first();
+          $ajob->jobstatus = null;
+          $ajob->save();
+          /*$ajob = new AssignJob();
           $ajob->agent_id = $request->agent_id;
           $ajob->customer_id = $user->id;
           $ajob->job_id = $ojob->id;
-          $result = $ajob->save();
+          $result = $ajob->save();*/
           return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
