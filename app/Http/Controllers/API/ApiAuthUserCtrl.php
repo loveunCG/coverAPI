@@ -17,6 +17,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Auth\Events\Registered;
 use App\Model\CompanyModel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 // use Aloha\Twilio\Support\Laravel\Facade;
 
@@ -96,7 +97,7 @@ class ApiAuthUserCtrl extends Controller
     {
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
-            return response()->json(['message' => 'Signup is failed', 'data' => $validator->errors(), 'response_code' => 0], 200);
+            return response()->json(['message' => 'Signup is failed', 'data' => null, 'response_code' => 0], 200);
         }
 
         if ($request->has('refferalcode')) {
@@ -140,64 +141,89 @@ class ApiAuthUserCtrl extends Controller
     {
         $message = $this->sms_content();
 
-        if (!$request->has('phoneno')) {
-            return response()->json(['message' => 'please insert correct phone number', 'data' => null, 'response_code' => 0], 200);
-        }
-
-        //extract data from the post
-        //set POST variables
-        $url = 'https://api.twilio.com/2010-04-01/Accounts/ACdc7e1a5c2afd8c7f442741dfd9cef07e/Messages.json';
-        $fields = array(
-            'To' => urlencode($request->phoneno),
-            'From' => urlencode("+19402203497"),
-            'Body' => urlencode($message)
-        );
-
-        $fields_string = "";
-
-        //url-ify the data for the POST
-        foreach($fields as $key=>$value) {
-            $fields_string .= $key.'='.$value.'&'; 
-        }
-        rtrim($fields_string, '&');
-
-        //open connection
-        $ch = curl_init();
-
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_POST, count($fields));
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_USERPWD, "ACdc7e1a5c2afd8c7f442741dfd9cef07e:2e38ac44561e3a14e5cc5302b3411f40");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        //execute post
-        $result = curl_exec($ch);
-        $json_result = json_decode($result);
-
-        //close connection
-        curl_close($ch);
-
-        if ($json_result->error_code === null) {
-            $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
-            if (empty($checkPhone)) {
-                $phoneVerify = new PhoneVerify();
-                $phoneVerify->phone_num = $request->phoneno;
-                $phoneVerify->verify_num = $message;
-                $phoneVerify->save();
-            } else {
-                $phoneVerify = PhoneVerify::findOrFail($checkPhone->id);
-                $phoneVerify->verify_num = $message;
-                $phoneVerify->update();
-            }
-            if ($phoneVerify->id) {
-                return response()->json(['message' => 'SMS is sent', 'response_code' => 1], 200);
-            } else {
-                return response()->json(['message' => 'there is no verify number', 'response_code' => 0], 200);
+        $validator = Validator::make($request->all(), ['email' => 'required|email']);
+        if (!$validator->fails()) {
+            try {
+                Mail::raw($message, function ($mess) use ($request) {
+                    $mess->to($request->email)->subject("Easycover Verify Code");
+                });
+                $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
+                if (empty($checkPhone)) {
+                    $phoneVerify = new PhoneVerify();
+                    $phoneVerify->phone_num = $request->phoneno;
+                    $phoneVerify->verify_num = $message;
+                    $phoneVerify->save();
+                } else {
+                    $phoneVerify = PhoneVerify::findOrFail($checkPhone->id);
+                    $phoneVerify->verify_num = $message;
+                    $phoneVerify->update();
+                }
+            } catch (\Exception $exception) {
+                return response()->json(['message' => 'Can not send Email', 'data' =>$exception, 'response_code' => 0], 500);
             }
         } else {
-            return response()->json(['message' => $json_result->error_message, 'response_code' => 0], 500);
+            return response()->json(['message' => 'please insert correct Email', 'data' => [], 'response_code' => 1], 200);
         }
+        return response()->json(['message' => 'Successfully sent reset Password code via your email', 'data' => [], 'response_code' => 1], 200);
+
+        // if (!$request->has('phoneno')) {
+        //     return response()->json(['message' => 'please insert correct phone number', 'data' => null, 'response_code' => 0], 200);
+        // }
+
+        // //extract data from the post
+        // //set POST variables
+        // $url = 'https://api.twilio.com/2010-04-01/Accounts/ACdc7e1a5c2afd8c7f442741dfd9cef07e/Messages.json';
+        // $fields = array(
+        //     'To' => urlencode($request->phoneno),
+        //     'From' => urlencode("+19402203497"),
+        //     'Body' => urlencode($message)
+        // );
+
+        // $fields_string = "";
+
+        // //url-ify the data for the POST
+        // foreach($fields as $key=>$value) {
+        //     $fields_string .= $key.'='.$value.'&'; 
+        // }
+        // rtrim($fields_string, '&');
+
+        // //open connection
+        // $ch = curl_init();
+
+        // //set the url, number of POST vars, POST data
+        // curl_setopt($ch,CURLOPT_URL, $url);
+        // curl_setopt($ch,CURLOPT_POST, count($fields));
+        // curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+        // curl_setopt($ch, CURLOPT_USERPWD, "ACdc7e1a5c2afd8c7f442741dfd9cef07e:2e38ac44561e3a14e5cc5302b3411f40");
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        // //execute post
+        // $result = curl_exec($ch);
+        // $json_result = json_decode($result);
+
+        // //close connection
+        // curl_close($ch);
+
+        // if ($json_result->error_code === null) {
+        //     $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
+        //     if (empty($checkPhone)) {
+        //         $phoneVerify = new PhoneVerify();
+        //         $phoneVerify->phone_num = $request->phoneno;
+        //         $phoneVerify->verify_num = $message;
+        //         $phoneVerify->save();
+        //     } else {
+        //         $phoneVerify = PhoneVerify::findOrFail($checkPhone->id);
+        //         $phoneVerify->verify_num = $message;
+        //         $phoneVerify->update();
+        //     }
+        //     if ($phoneVerify->id) {
+        //         return response()->json(['message' => 'SMS is sent', 'response_code' => 1], 200);
+        //     } else {
+        //         return response()->json(['message' => 'there is no verify number', 'response_code' => 0], 200);
+        //     }
+        // } else {
+        //     return response()->json(['message' => $json_result->error_message, 'response_code' => 0], 500);
+        // }
     }
 
     public function update(Request $request)
@@ -243,15 +269,15 @@ class ApiAuthUserCtrl extends Controller
                 $where = array('phone_num' => $request->phoneno, 'verify_num'=>$request->verifyToken );
                 $resultVerify = PhoneVerify::where($where)->get();
                 if (count($resultVerify) > 0) {
-                    return response()->json(['message' => 'verifying is okay!', 'data' => null, 'response_code' => 1], 200);
+                    return response()->json(['message' => 'verifying is okay!', 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'verifying is failed', 'data' => null, 'response_code' => 0], 200);
+                    return response()->json(['message' => 'verifying is failed', 'response_code' => 0], 200);
                 }
             } else {
-                return response()->json(['message' => 'There is no phone number or verify number', 'data' => null, 'response_code' => 0], 200);
+                return response()->json(['message' => 'There is no phone number or verify number', 'response_code' => 0], 200);
             }
         } catch (\Exception $e) {
-            return response()->json(['message' => 'server error', 'data' => $e, 'response_code' => 0], 200);
+            return response()->json(['message' => 'server error', 'response_code' => 0], 200);
         }
     }
 
