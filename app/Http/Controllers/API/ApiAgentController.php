@@ -477,7 +477,6 @@ class ApiAgentController extends Controller
                 return response()->json(['message' => 'Get quotation list by agent id', 'data' => $quotations, 'response_code' => 1], 200);
             } else {
                 $quotations = JobsModel::join('quotations', 'jobs.id', '=', 'quotations.job_id')
-                ->join('assignJobs', 'jobs.id', '=', 'assignJobs.job_id')
                                 ->where(['jobs.user_id' => $user->id])->get();
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
