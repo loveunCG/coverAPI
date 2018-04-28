@@ -222,6 +222,8 @@ class ApiAgentController extends Controller
             if ($ajob = AssignJob::where(['job_id'=>$request->jobid,'agent_id'=>$request->agentId,'customer_id'=>$user->id,])->first()) {
                 $ajob->jobstatus = $request->status;
                 $ajob->update();
+                AssignJob::where(['job_id'=>$request->jobid,'customer_id'=>$user->id,])->where('agent_id', '!=', $request->agentId)->delete();
+                QuotationModel::where('agent_id', '!=', $request->agentId)->where('job_id', '=', $request->jobid)->delete();
                 $action = $ajob;
             } else {
                 return response()->json(['message' => 'There is not that job', 'data' => null, 'response_code' => 0], 200);
@@ -478,6 +480,14 @@ class ApiAgentController extends Controller
             } else {
                 $quotations = JobsModel::join('quotations', 'jobs.id', '=', 'quotations.job_id')
                                 ->where(['jobs.user_id' => $user->id])->get();
+                foreach ($quotations as $k => $quotation) {
+                  $res = AssignJob::where('quotation_id', $quotation["id"])->get();
+                  if (count($res) == 0) {
+                    unset($quotations[$k]);
+                  } else if($res[$k]["jobstatus"] != 3){
+                    unset($quotations[$k]);
+                  }
+                }
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
         }
