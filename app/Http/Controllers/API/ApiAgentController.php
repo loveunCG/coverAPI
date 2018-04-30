@@ -8,6 +8,7 @@ use App\Model\AssignJob;
 use App\Model\JobsModel;
 use App\Model\QuotationModel;
 use App\Model\DocumentsModel;
+use App\Model\rating;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -288,15 +289,19 @@ class ApiAgentController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         try {
-            $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
+            $jobs = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
                     ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id])
                     ->where('assignJobs.jobstatus', '=', null)
                     ->select()
                     ->addSelect('assignJobs.id as assignJobsId')
                     ->get();
-            if (count($job) > 0) {
-                return response()->json(['message' => 'All assigned job', 'data' => $job, 'response_code' => 1], 200);
+            foreach ($jobs as $k => $job) {
+              $customer = User::where('users.id', '=', $job['customer_id'])->get()->first();
+              $jobs[$k]['image'] = $customer['image'];
+            }
+            if (count($jobs) > 0) {
+                return response()->json(['message' => 'All assigned job', 'data' => $jobs, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'No job is assigned to this agent', 'data' => null, 'response_code' => 0], 200);
             }
@@ -502,26 +507,6 @@ class ApiAgentController extends Controller
         }
         try {
           $ojob = JobsModel::where(['id'=>$request->jobid])->first();
-          // create jobs transaction record
-          /*($jobmodel = new JobsModel();
-          $jobmodel->user_id = $user->id;
-          $jobmodel->name = $ojob->name;
-          $jobmodel->nric = $ojob->nric;
-          $jobmodel->phoneno = $ojob->phoneno;
-          $jobmodel->insurance_type = $ojob->insurance_type;
-          $jobmodel->indicative_sum = $ojob->indicative_sum;
-          $jobmodel->address = $ojob->address;
-          $jobmodel->postcode = $ojob->postcode;
-          $jobmodel->state = $ojob->state;
-          $jobmodel->country = $ojob->country;
-          $jobmodel->job_status = 0;
-          $jobmodel->company_id = $ojob->company_id;
-          $jobmodel->quotation_price = $ojob->quotation_price;
-          $format = 'Y-m-d H:i:s';
-          $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
-          $exp_d->modify('+1 year');
-          $jobmodel->expired_date = $exp_d;
-          $jobmodel->save();*/
           $format = 'Y-m-d H:i:s';
           $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
           $exp_d->modify('+1 year');
@@ -531,14 +516,43 @@ class ApiAgentController extends Controller
           $ajob = AssignJob::where(['job_id'=>$ojob->id,'agent_id'=>$request->agent_id,'customer_id'=>$user->id,])->first();
           $ajob->jobstatus = null;
           $ajob->save();
-          /*$ajob = new AssignJob();
-          $ajob->agent_id = $request->agent_id;
-          $ajob->customer_id = $user->id;
-          $ajob->job_id = $ojob->id;
-          $result = $ajob->save();*/
           return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
+    }
+
+    //getRatings
+    public function getRatings(Request $request)
+    {
+      $user = JWTAuth::parseToken()->authenticate();
+
+    }
+
+    //addRatings
+    public function addRatings(Request $request)
+    {
+      $user = JWTAuth::parseToken()->authenticate();
+      if (!$request->has('agent_id')) {
+          return response()->json(['message' => 'No agent_id', 'data' => null, 'response_code' => 0], 200);
+      }
+      if (!$request->has('rating')) {
+          return response()->json(['message' => 'No rating', 'data' => null, 'response_code' => 0], 200);
+      }
+      $rating = new rating();
+        $rating->user_id = $request->agent_id;
+        $rating->rating = $request->rating;
+        $rating->save();
+        return response()->json(['message' => 'Add Rating success', 'response_code' => 1], 200);
+      try
+      {
+        $rating = new rating();
+        //$ratings->user_id = $request->agent_id;
+        $ratings->rating = $request->rating;
+        $rating->save();
+        return response()->json(['message' => 'Add Rating success', 'response_code' => 1], 200);
+      } catch (\Exception $exception) {
+          return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
+      }
     }
 }

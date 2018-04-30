@@ -49,6 +49,8 @@ Route::group(['middleware' => ['auth.jwt'], 'prefix' => 'agent', 'as' => 'agent.
     Route::post('/view/history', 'API\ApiAgentController@agentHistory');
     Route::post('/agentCompletedJob', 'API\ApiAgentController@agentCompletedJob');
     Route::post('/view/joblist', 'API\ApiCustomerController@fetchJob');
+    Route::post('/getRatings', 'API\ApiAgentController@getRatings');
+    Route::post('/addRatings', 'API\ApiAgentController@addRatings');
 });
 
 // independent API
