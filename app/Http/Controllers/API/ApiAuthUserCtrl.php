@@ -18,6 +18,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Model\CompanyModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use DateTime;
 
 // use Aloha\Twilio\Support\Laravel\Facade;
 
@@ -266,9 +267,14 @@ class ApiAuthUserCtrl extends Controller
     {
         try {
             if ($request->has(['phoneno', 'verifyToken'])) {
+                $date = new DateTime;
+                $date->modify('-5 minutes');
+                $formatted_date = $date->format('Y-m-d H:i:s');
+                PhoneVerify::where('updated_at', '<=', $formatted_date)->delete();
                 $where = array('phone_num' => $request->phoneno, 'verify_num'=>$request->verifyToken );
                 $resultVerify = PhoneVerify::where($where)->get();
                 if (count($resultVerify) > 0) {
+                    PhoneVerify::where($where)->delete();
                     return response()->json(['message' => 'verifying is okay!', 'response_code' => 1], 200);
                 } else {
                     return response()->json(['message' => 'verifying is failed', 'response_code' => 0], 200);
@@ -287,7 +293,7 @@ class ApiAuthUserCtrl extends Controller
         $where = array('user_id' => $user->id);
         try {
             $referralCode = ReferralCodeModel::where($where)->first();
-            return response()->json(['message' => 'get referal Code', 'data' => ['referral_code'=>$referralCode->rederral_code], 'response_code' => 1], 200);
+            return response()->json(['message' => 'get referral Code', 'data' => ['referral_code'=>$referralCode->rederral_code], 'response_code' => 1], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'getting is failed', 'data' => null, 'response_code' => 0], 200);
         }

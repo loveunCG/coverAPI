@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateJobTable extends Migration
+class UpdateJobsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class UpdateJobTable extends Migration
      */
     public function up()
     {
-        //
         Schema::table('jobs', function (Blueprint $table) {
-            //$table->dropColumn('quotation_price');
+            $table->bigInteger('nric')->change();
         });
     }
 

@@ -424,7 +424,6 @@ class ApiAgentController extends Controller
           'quotation_price' => $request->quotation_price,
           'quotation_description' => $request->quotation_description
         );
-
         try {
             $quot = QuotationModel::where(['agent_id' => $user->id, 'job_id' => $request->job_id ])
             ->get();
@@ -432,9 +431,9 @@ class ApiAgentController extends Controller
                 $quot[0]->quotation_price = $request->quotation_price;
                 $quot[0]->quotation_description = $request->quotation_description;
                 $quot[0]->save();
-                $job = JobsModel::where("id", "=", $request->job_id)->get()->first();
+                /*$job = JobsModel::where("id", "=", $request->job_id)->get()->first();
                 $job->quotation_price = $request->quotation_price;
-                $job->update();
+                $job->update();*/
                 // Update documents table
                 foreach ($request->documents as $docurl) {
                     $document = new DocumentsModel();
@@ -484,9 +483,13 @@ class ApiAgentController extends Controller
                 return response()->json(['message' => 'Get quotation list by agent id', 'data' => $quotations, 'response_code' => 1], 200);
             } else {
                 $quotations = JobsModel::join('quotations', 'jobs.id', '=', 'quotations.job_id')
-                                ->where(['jobs.user_id' => $user->id])->get();
+                                ->join('users', 'quotations.agent_id', '=', 'users.id')
+                                ->where(['jobs.user_id' => $user->id])
+                                ->select()
+                                ->addSelect('quotations.id as quotation_id')
+                                ->get();
                 foreach ($quotations as $k => $quotation) {
-                  $res = AssignJob::where('quotation_id', $quotation["id"])->get();
+                  $res = AssignJob::where('quotation_id', $quotation["quotation_id"])->get();
                   if (count($res) == 0) {
                     unset($quotations[$k]);
                   } else if($res[$k]["jobstatus"] != 3){
