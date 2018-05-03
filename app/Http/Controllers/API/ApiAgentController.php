@@ -490,10 +490,10 @@ class ApiAgentController extends Controller
                                 ->addSelect('quotations.id as quotation_id')
                                 ->get();
                 foreach ($quotations as $k => $quotation) {
-                  $res = AssignJob::where('quotation_id', $quotation["quotation_id"])->get();
-                  if (count($res) == 0) {
+                  $res = AssignJob::where('quotation_id', $quotation["quotation_id"])->get()->first();
+                  if ($res == null) {
                     unset($quotations[$k]);
-                  } else if($res[$k]["jobstatus"] != 3){
+                  } else if($res["jobstatus"] != 3){
                     unset($quotations[$k]);
                   }
                 }
