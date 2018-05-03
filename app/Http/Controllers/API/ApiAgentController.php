@@ -255,6 +255,7 @@ class ApiAgentController extends Controller
         try {
             if ($user->usertype == 'agent') {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
+                                ->join('users', 'assignJobs.customer_id', '=', 'users.id')
                                 ->where(['assignJobs.jobstatus' => '1','assignJobs.agent_id' => $user->id])
                                 ->get();
                 if (count($jobList) > 0) {
@@ -264,6 +265,7 @@ class ApiAgentController extends Controller
                 }
             } else {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
+                                ->join('users', 'assignJobs.customer_id', '=', 'users.id')
                                 ->where(['assignJobs.customer_id' => $user->id , 'assignJobs.jobstatus' => '1'])->get();
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);

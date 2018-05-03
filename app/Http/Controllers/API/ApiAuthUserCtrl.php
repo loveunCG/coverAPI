@@ -241,6 +241,7 @@ class ApiAuthUserCtrl extends Controller
         $state = ($request->state != null) ? $request->state : $user->state;
         $country = ($request->country != null) ? $request->country : $user->country;
         $photo = ($request->photo != null) ? $request->photo : $user->image;
+        $language = ($request->language != null) ? $request->language : $user->language;
         $user->username = $username;
         $user->email = $email;
         $user->username = $username;
@@ -252,6 +253,7 @@ class ApiAuthUserCtrl extends Controller
         $user->state = $state;
         $user->country = $country;
         $user->image = $photo;
+        $user->language = $language;
         try {
             if ($user->save()) {
                 return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
