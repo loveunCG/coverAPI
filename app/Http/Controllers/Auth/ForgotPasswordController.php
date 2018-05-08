@@ -63,10 +63,10 @@ class ForgotPasswordController extends Controller
                 try {
                     Mail::to($user['email'])->send(new VerifyEmail($user));
                 } catch (\Exception $exception) {
-                    return response()->json(['message' => 'Can not send Mail', 'data' =>[], 'response_code' => 0], 500);
+                    return response()->json(['message' => 'Can not send Mail1', 'data' =>$exception, 'response_code' => 0], 500);
                 }
             } else {
-                return response()->json(['message' => 'Can not send Mail', 'data' =>[], 'response_code' => 0], 500);
+                return response()->json(['message' => 'Can not send Mail2', 'data' =>[], 'response_code' => 0], 500);
             }
         } else {
             return response()->json(['message' => 'please insert correct Email', 'data' => [], 'response_code' => 1], 200);
