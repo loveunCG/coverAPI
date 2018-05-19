@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 
 Route::post('customer/create', 'API\ApiAuthUserCtrl@signup');
 Route::post('user/login', 'API\ApiAuthUserCtrl@authenticate');
+Route::post('user/emailExist', 'API\ApiAuthUserCtrl@mailExist');
 Route::post('user/sendSMS', 'API\ApiAuthUserCtrl@sendSMS');
 Route::post('user/checkVerfityCode', 'API\ApiAuthUserCtrl@checkPhoneVerify');
 Route::post('user/forgetPassword', 'Auth\ForgotPasswordController@sendEmailToken');

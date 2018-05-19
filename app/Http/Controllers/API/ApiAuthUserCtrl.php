@@ -36,7 +36,7 @@ class ApiAuthUserCtrl extends Controller
         ];
         return Validator::make($data, [
             'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:6',
             'phoneno' => 'required|string|max:255',
             'devicename' => 'required|string|max:255',
@@ -51,7 +51,7 @@ class ApiAuthUserCtrl extends Controller
     public function authenticate(Request $request)
     {
         // grab credentials from the request
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password', 'usertype');
 
         try {
             // attempt to verify the credentials and create a token for the user
@@ -62,15 +62,15 @@ class ApiAuthUserCtrl extends Controller
             // something went wrong whilst attempting to encode the token
             return response()->json(['message' => 'could_not_create_token', 'data' => null, 'response_code' => 0], 500);
         }
-        if ($request->has(['email', 'devicetoken'])) {
-            $user = User::where(['email' => $request->email])->first();
+        if ($request->has(['email', 'devicetoken', 'usertype'])) {
+            $user = User::where(['email' => $request->email, 'usertype' => $request->usertype])->first();
             $user->devicetoken = $request->devicetoken;
             $user->save();
         } else {
             return response()->json(['message' => 'Device Token updation Problem', 'data' => null, 'response_code' => 0], 200);
         }
         return response()->json(['message' => 'successfully login and user is verified',
-            'data' => User::where(['email' => $request->email])->first(), 'token'=>$token,
+            'data' => User::where(['email' => $request->email, 'usertype' => $request->usertype])->first(), 'token'=>$token,
             'response_code' => 1, 'userVerified' => [1]], 200);
     }
 
@@ -92,6 +92,17 @@ class ApiAuthUserCtrl extends Controller
                 'longitude'=>$data['longitude']
             ];
         return User::create($user);
+    }
+
+    public function mailExist(Request $request)
+    {
+        $user = User::where('email', '=', $request->email)
+                ->where('usertype', '=', $request->usertype)
+                ->get();
+        if (count($user) > 0) {
+            return response()->json(['message' => 'Email address already exist!', 'response_code' => 0], 200);
+        }
+        return response()->json(['message' => '', 'response_code' => 1], 200);
     }
 
     public function signup(Request $request)
@@ -160,12 +171,12 @@ class ApiAuthUserCtrl extends Controller
                     $phoneVerify->update();
                 }
             } catch (\Exception $exception) {
-                return response()->json(['message' => 'Can not send Email', 'data' =>$exception, 'response_code' => 0], 500);
+                return response()->json(['message' => 'Email address not exist!', 'data' =>$exception, 'response_code' => 0], 500);
             }
         } else {
             return response()->json(['message' => 'please insert correct Email', 'data' => [], 'response_code' => 1], 200);
         }
-        return response()->json(['message' => 'Successfully sent reset Password code via your email', 'data' => [], 'response_code' => 1], 200);
+        return response()->json(['message' => 'Check your mailbox for verification code', 'data' => [], 'response_code' => 1], 200);
 
         // if (!$request->has('phoneno')) {
         //     return response()->json(['message' => 'please insert correct phone number', 'data' => null, 'response_code' => 0], 200);
