@@ -66,7 +66,7 @@ class ForgotPasswordController extends Controller
                     return response()->json(['message' => 'Can not send Mail', 'data' =>$exception, 'response_code' => 0], 500);
                 }
             } else {
-                return response()->json(['message' => 'Email address not exist!', 'data' =>[], 'response_code' => 0], 500);
+                return response()->json(['message' => 'Email address not exist!', 'data' =>[], 'response_code' => 0], 200);
             }
         } else {
             return response()->json(['message' => 'please input correct Email', 'data' => [], 'response_code' => 1], 200);

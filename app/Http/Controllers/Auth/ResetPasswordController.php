@@ -51,14 +51,14 @@ class ResetPasswordController extends Controller
         'verifyCode' => 'required'
       ]);
         if ($validator->fails()) {
-            return response()->json(['message' => 'please insert correct Email, password, verifyCode', 'data' => null, 'response_code' => 1], 200);
+            return response()->json(['message' => 'please insert correct Email, password, verifyCode', 'data' => null, 'response_code' => 0], 200);
         }
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            return response()->json(['message' => 'please insert correct Email', 'data' => null, 'response_code' => 1], 200);
+            return response()->json(['message' => 'please insert correct Email', 'data' => null, 'response_code' => 0], 200);
         }
         if ($user->verifyToken!=$request->verifyCode) {
-            return response()->json(['message' => 'please insert correct verify code', 'data' => null, 'response_code' => 1], 200);
+            return response()->json(['message' => 'please insert correct verify code', 'data' => null, 'response_code' => 0], 200);
         }
         $user->password = Hash::make($request->password);
         //$user->setRememberToken(Str::random(60));
