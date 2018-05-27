@@ -473,9 +473,9 @@ class ApiAgentController extends Controller
     public function getQuotation(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($request->has('quotaion_id')) {
+        if ($request->has('quotation_id')) {
             $quotation = QuotationModel::join('jobs', 'jobs.id', '=', 'quotations.job_id')
-                            ->where(['quotations.id' => $request->quotaion_id])->get();
+                            ->where(['quotations.id' => $request->quotation_id])->get();
             return response()->json(['message' => 'Get quotation by quotation ID', 'data' => $quotation, 'response_code' => 1], 200);
         } else {
             if ($user->usertype == 'agent') {
