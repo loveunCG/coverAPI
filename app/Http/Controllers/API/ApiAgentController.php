@@ -296,6 +296,7 @@ class ApiAgentController extends Controller
                     ->where('assignJobs.jobstatus', '=', null)
                     ->select()
                     ->addSelect('assignJobs.id as assignJobsId')
+                    ->addSelect('assignJobs.updated_at as assUpdatedAt')
                     ->get();
             foreach ($jobs as $k => $job) {
               $customer = User::where('users.id', '=', $job['customer_id'])->get()->first();
