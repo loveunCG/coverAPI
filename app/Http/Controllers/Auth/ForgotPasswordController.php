@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\User;
+use App\Model\password_reset;
 use Illuminate\Http\Request;
 use App\Mail\VerifyEmail;
 use Illuminate\Support\Facades\Mail;
@@ -60,6 +61,19 @@ class ForgotPasswordController extends Controller
                 $token = $this->generateToken();
                 $user->verifyToken = $token;
                 $user->save();
+                $cReset = password_reset::where("email", $request->email)
+                            ->where("usertype", $request->userrole)
+                            ->first();
+                if ($cReset) {
+                    $cReset->token = $token;
+                    $cReset->save();
+                } else {
+                    $rReset = new password_reset();
+                    $rReset->email = $request->email;
+                    $rReset->token = $token;
+                    $rReset->userType = $request->userrole;
+                    $rReset->save();
+                }
                 try {
                     Mail::to($user['email'])->send(new VerifyEmail($user));
                 } catch (\Exception $exception) {

@@ -79,30 +79,33 @@ class ApiCustomerController extends Controller
         $validator = Validator::make($request->all(), [
           'name' => 'required',
           'nric' => 'required',
-          'insurencetype' => 'required',
           'phoneno' => 'required',
-          'indicative_sum' => 'required',
           'address' => 'required',
           'state' => 'required',
-          'expired_date' => 'required',
           'country' => 'required',
-          'company_id' => 'required',
-          'documents'=>'required'
+          'company_id' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['message' => 'Submit error', 'data' => $validator->errors(), 'response_code' => 0], 200);
         }
+        ($request->username != null) ? $request->username : $user->username;
         $userid = $user->id;
         $name = $request->name;
         $nric = $request->nric;
         $phone = $request->phoneno;
-        $instype = $request->insurencetype;
-        $sum = $request->indicative_sum;
+        if ($request->insurencetype != null) {
+            $instype = $request->insurencetype;
+        }
+        if ($request->indicative_sum != null) {
+            $sum = $request->indicative_sum;
+        }
         $address = $request->address;
         $pcode = $request->postcode;
         $state = $request->state;
         $country = $request->country;
-        $expired_date = $request->expired_date;
+        if ($request->expired_date != null) {
+            $expired_date = $request->expired_date;
+        }
         $company_id = $request->company_id;
         // create jobs transaction record
         $jobmodel = new JobsModel();
@@ -110,14 +113,20 @@ class ApiCustomerController extends Controller
         $jobmodel->name = $name;
         $jobmodel->nric = $nric;
         $jobmodel->phoneno = $phone;
-        $jobmodel->insurance_type = $instype;
-        $jobmodel->indicative_sum = $sum;
+        if ($request->insurencetype != null) {
+            $jobmodel->insurance_type = $instype;
+        }
+        if ($request->indicative_sum != null) {
+            $jobmodel->indicative_sum = $sum;
+        }
         $jobmodel->address = $address;
         $jobmodel->postcode = $pcode;
         $jobmodel->state = $state;
         $jobmodel->country = $country;
         $jobmodel->job_status = 0;
-        $jobmodel->expired_date = $expired_date;
+        if ($request->expired_date != null) {
+            $jobmodel->expired_date = $expired_date;
+        }
         $jobmodel->company_id = $company_id;
         try {
             $result = $jobmodel->save();
@@ -200,16 +209,18 @@ class ApiCustomerController extends Controller
     {
         if ($request->has('jobId')) {
             try {
-                $userJobs = JobsModel::where(['id' => $request->jobId])->first();
+                $insurances = InsuranceModel::all();
+                $userJobs = JobsModel::where(['id'=>$request->jobId])->first();
                 $jobData = array();
                 $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
-                $insuranceData = InsuranceModel::findOrFail($userJobs->insurance_type);
+                if (count($insurances) > $userJobs->insurance_type) {
+                    $insuranceData = InsuranceModel::findOrFail($userJobs->insurance_type);
+                    $userJobs['insurance_id'] = $insuranceData->id;
+                    $userJobs['insurance_name'] = $insuranceData->insurance_name;
+                }
                 $userJobs['company'] = CompanyModel::findOrFail($userJobs->company_id);
                 $userJobs['documents'] = $documents;
-                $userJobs['insurance_id'] = $insuranceData->id;
-                $userJobs['insurance_name'] = $insuranceData->insurance_name;
-                    return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
-                if (count($userJobs) > 0) {
+                if ($userJobs) {
                     return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
                 } else {
                     return response()->json(['message' => 'No job is created by this person', 'data' => null, 'response_code' => 0], 200);
