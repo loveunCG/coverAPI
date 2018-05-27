@@ -218,7 +218,10 @@ class ApiCustomerController extends Controller
                     $userJobs['insurance_id'] = $insuranceData->id;
                     $userJobs['insurance_name'] = $insuranceData->insurance_name;
                 }
-                $userJobs['company'] = CompanyModel::findOrFail($userJobs->company_id);
+                $companies = CompanyModel::all();
+                if (count($companies) > $userJobs->company_id) {
+                    $userJobs['company'] = CompanyModel::findOrFail($userJobs->company_id);
+                }
                 $userJobs['documents'] = $documents;
                 if ($userJobs) {
                     return response()->json(['message' => 'job', 'data' => $userJobs, 'response_code' => 1], 200);
