@@ -293,7 +293,6 @@ class ApiAgentController extends Controller
             $jobs = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
                     ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
                     ->where(['assignJobs.agent_id' => $user->id, 'assignJobs.jobstatus' => null])
-                    ->orWhere(['assignJobs.agent_id' => $user->id, 'assignJobs.jobstatus' => '3'])
                     ->select()
                     ->addSelect('assignJobs.id as assignJobsId')
                     ->addSelect('assignJobs.updated_at as assUpdatedAt')
