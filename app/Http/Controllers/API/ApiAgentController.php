@@ -223,7 +223,7 @@ class ApiAgentController extends Controller
                 $ajob->jobstatus = $request->status;
                 $ajob->update();
                 AssignJob::where(['job_id'=>$request->jobid,'customer_id'=>$user->id,])->where('agent_id', '!=', $request->agentId)->delete();
-                DocumentsModel::where(['job_id'=>$request->jobid])->where('user_id', '!=', $request->agentId)->delete();
+                DocumentsModel::where('job_id', '=', $request->jobid)->where('user_id', '!=', $request->agentId)->where('user_id', '!=', $user->id)->delete();
                 QuotationModel::where('agent_id', '!=', $request->agentId)->where('job_id', '=', $request->jobid)->delete();
                 $action = $ajob;
             } else {
