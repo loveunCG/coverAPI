@@ -256,7 +256,11 @@ class ApiCustomerController extends Controller
         }
         if ($request->has('jobId') && $request->has('user_id')) {
             try {
-                $documents = DocumentsModel::where(['job_id' => $request->jobId,'user_id' => $request->user_id])->get();
+                $documents = DocumentsModel::where('job_id' , '=' ,$request->jobId)->where(function ($query) use ($user, $request) {
+                    $query->where('user_id', '=', $user->id)
+                    ->orWhere('user_id', '=', $request->user_id);
+                })->get();
+                //$documents = DocumentsModel::where(['job_id' => $request->jobId,'user_id' => $request->user_id])->get();
                 if (count($documents) > 0) {
                     return response()->json(['message' => 'Documents', 'data' => $documents, 'response_code' => 1], 200);
                 } else {
