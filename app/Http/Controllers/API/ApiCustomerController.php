@@ -214,9 +214,15 @@ class ApiCustomerController extends Controller
                 $userJobs = JobsModel::where(['id'=>$request->jobId])->first();
                 $jobData = array();
                 if ($user->usertype == 'agent') {
-                    $documents = DocumentsModel::where(['job_id' => $userJobs->id, 'user_id' => $user->id])->get();
+                    $documents = DocumentsModel::where('job_id' , '=' ,$userJobs->id)->where(function ($query) {
+                        $query->where('user_id', '=', $user->id)
+                        ->orWhere('user_id', '=', $request->customer_id);
+                    })->get();
                 } else {
-                    $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
+                    $documents = DocumentsModel::where('job_id' , '=' ,$userJobs->id)->where(function ($query) {
+                        $query->where('user_id', '=', $user->id)
+                        ->orWhere('user_id', '=', $request->agent_id);
+                    })->get();
                 }
                 if (count($insurances) > $userJobs->insurance_type) {
                     $insuranceData = InsuranceModel::findOrFail($userJobs->insurance_type);
