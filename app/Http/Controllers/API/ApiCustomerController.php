@@ -208,12 +208,6 @@ class ApiCustomerController extends Controller
     public function jobDetail(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        $userId = $user->id;
-        $documents = DocumentsModel::where('job_id' , '=' ,350)->where(function ($query) use ($userId) {
-                                $query->where(['user_id' => $userId])
-                                ->orWhere('user_id', '=', 121);
-                            })->get();
-        return $documents;
         if ($request->has('jobId')) {
             try {
                 $insurances = InsuranceModel::all();
