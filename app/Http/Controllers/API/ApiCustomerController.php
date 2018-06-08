@@ -208,18 +208,24 @@ class ApiCustomerController extends Controller
     public function jobDetail(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
+        $userId = $user->id;
+        $documents = DocumentsModel::where('job_id' , '=' ,350)->where(function ($query) use ($userId) {
+                                $query->where(['user_id' => $userId])
+                                ->orWhere('user_id', '=', 121);
+                            })->get();
+        return $documents;
         if ($request->has('jobId')) {
             try {
                 $insurances = InsuranceModel::all();
                 $userJobs = JobsModel::where(['id'=>$request->jobId])->first();
                 $jobData = array();
                 if ($user->usertype == 'agent') {
-                    $documents = DocumentsModel::where('job_id' , '=' ,$userJobs->id)->where(function ($query) {
+                    $documents = DocumentsModel::where('job_id' , '=' ,$userJobs->id)->where(function ($query) use ($user, $request) {
                         $query->where('user_id', '=', $user->id)
                         ->orWhere('user_id', '=', $request->customer_id);
                     })->get();
                 } else {
-                    $documents = DocumentsModel::where('job_id' , '=' ,$userJobs->id)->where(function ($query) {
+                    $documents = DocumentsModel::where('job_id' , '=' ,$userJobs->id)->where(function ($query) use ($user, $request) {
                         $query->where('user_id', '=', $user->id)
                         ->orWhere('user_id', '=', $request->agent_id);
                     })->get();
