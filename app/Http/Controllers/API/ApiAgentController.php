@@ -490,15 +490,16 @@ class ApiAgentController extends Controller
                                 ->select()
                                 ->addSelect('quotations.id as quotation_id')
                                 ->get();
+                $rets = [];
                 foreach ($quotations as $k => $quotation) {
                   $res = AssignJob::where('quotation_id', $quotation["quotation_id"])->get()->first();
                   if ($res == null) {
-                    unset($quotations[$k]);
                   } else if($res["jobstatus"] != 3){
-                    unset($quotations[$k]);
+                  } else {
+                    array_push($rets, $quotations[$k]);
                   }
                 }
-                return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
+                return response()->json(['message' => 'Get quotation list by customer id', 'data' => $rets, 'response_code' => 1], 200);
             }
         }
     }
