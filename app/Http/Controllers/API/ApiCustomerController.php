@@ -207,12 +207,17 @@ class ApiCustomerController extends Controller
     // GET Job Details
     public function jobDetail(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
         if ($request->has('jobId')) {
             try {
                 $insurances = InsuranceModel::all();
                 $userJobs = JobsModel::where(['id'=>$request->jobId])->first();
                 $jobData = array();
-                $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
+                if ($user->usertype == 'agent') {
+                    $documents = DocumentsModel::where(['job_id' => $userJobs->id, 'user_id' => $user->id])->get();
+                } else {
+                    $documents = DocumentsModel::where(['job_id' => $userJobs->id])->get();
+                }
                 if (count($insurances) > $userJobs->insurance_type) {
                     $insuranceData = InsuranceModel::findOrFail($userJobs->insurance_type);
                     $userJobs['insurance_id'] = $insuranceData->id;

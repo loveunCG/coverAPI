@@ -157,7 +157,7 @@ class ApiAuthUserCtrl extends Controller
         if (!$validator->fails()) {
             try {
                 Mail::raw($message, function ($mess) use ($request) {
-                    $mess->to($request->email)->subject("Easycover Verify Code");
+                    $mess->to($request->email)->subject("EasyCover Password Reset Verification Code");
                 });
                 $checkPhone = PhoneVerify::where('phone_num', $request->phoneno)->first();
                 if (empty($checkPhone)) {
@@ -290,7 +290,7 @@ class ApiAuthUserCtrl extends Controller
                     PhoneVerify::where($where)->delete();
                     return response()->json(['message' => 'verifying is okay!', 'response_code' => 1], 200);
                 } else {
-                    return response()->json(['message' => 'verifying is failed', 'response_code' => 0], 200);
+                    return response()->json(['message' => 'The verification code has expired', 'response_code' => 0], 200);
                 }
             } else {
                 return response()->json(['message' => 'There is no phone number or verify number', 'response_code' => 0], 200);

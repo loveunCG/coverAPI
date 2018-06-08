@@ -56,7 +56,7 @@ class ForgotPasswordController extends Controller
     {
         $validator = Validator::make($request->all(), ['email' => 'required|email']);
         if (!$validator->fails()) {
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->wher('usertype', $request->userrole)->first();
             if ($user) {
                 $token = $this->generateToken();
                 $user->verifyToken = $token;
