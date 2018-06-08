@@ -357,17 +357,15 @@ class ApiAgentController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
         try {
-            $job = User::join('assignJobs', 'users.id', '=', 'assignJobs.agent_id')
-                    ->join('jobs', 'assignJobs.job_id', '=', 'jobs.id')
-                    ->where(['assignJobs.agent_id' => $user->id])
-                    ->where('assignJobs.jobstatus', '=', '4')
-                    ->where(['jobs.job_status' => '1'])
-                    ->get();
-            if (count($job) > 0) {
-                return response()->json(['message' => 'Agent Completed Jobs', 'data' => $job, 'response_code' => 1], 200);
-            } else {
-                return response()->json(['message' => 'No job is completed by this agent', 'data' => null, 'response_code' => 0], 200);
-            }
+          $job = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
+                                ->join('users', 'assignJobs.customer_id', '=', 'users.id')
+                                ->where(['assignJobs.jobstatus' => '4','assignJobs.agent_id' => $user->id])
+                                ->get();
+          if (count($job) > 0) {
+              return response()->json(['message' => 'Agent Completed Jobs', 'data' => $job, 'response_code' => 1], 200);
+          } else {
+              return response()->json(['message' => 'No job is completed by this agent', 'data' => null, 'response_code' => 0], 200);
+          }
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
