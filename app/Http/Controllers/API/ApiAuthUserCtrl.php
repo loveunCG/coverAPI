@@ -253,6 +253,8 @@ class ApiAuthUserCtrl extends Controller
         $country = ($request->country != null) ? $request->country : $user->country;
         $photo = ($request->photo != null) ? $request->photo : $user->image;
         $language = ($request->language != null) ? $request->language : $user->language;
+        $longitude = ($request->longitude != null) ? $request->longitude : $user->longitude;
+        $latitude = ($request->latitude != null) ? $request->latitude : $user->latitude;
         $user->username = $username;
         $user->email = $email;
         $user->username = $username;
@@ -265,6 +267,8 @@ class ApiAuthUserCtrl extends Controller
         $user->country = $country;
         $user->image = $photo;
         $user->language = $language;
+        $user->longitude = $longitude;
+        $user->latitude = $latitude;
         try {
             if ($user->save()) {
                 return response()->json(['message' => 'update successfully ', 'data' =>$user, 'response_code' => 1], 200);
