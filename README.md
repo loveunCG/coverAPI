@@ -6,6 +6,6 @@ This is api server and admin portal for easycover app
 
 
 
-##License
+## License
 
 This Project is open-sourced software licensed under the MIT license.
