@@ -16,7 +16,6 @@ use DateTime;
 
 class ApiAgentController extends Controller
 {
-    //
     public function assignAgent(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -30,25 +29,23 @@ class ApiAgentController extends Controller
                         $lat = $val->latitude;
                         $lon = $val->longitude;
                     }
-                    $agents = DB::table("users")
-<<<<<<< HEAD
-                        ->select("users.*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
+                    $agents = DB::table('users')
+                        ->select('users.*', DB::raw('6371 * acos(cos(radians('.$lat.'))
 		                     * cos(radians(users.latitude))
-		                   * cos(radians(users.longitude) - radians(" . $lon . "))
-		                 + sin(radians(" . $lat . "))
-		                 * sin(radians(users.latitude))) AS distance"))
-=======
-                            ->select("users.*", DB::raw("6371 * acos(cos(radians(" . $lat . "))
+		                   * cos(radians(users.longitude) - radians('.$lon.'))
+		                 + sin(radians('.$lat.'))
+		                 * sin(radians(users.latitude))) AS distance'))
+                            ->select('users.*', DB::raw('6371 * acos(cos(radians('.$lat.'))
                          * cos(radians(users.latitude))
-                       * cos(radians(users.longitude) - radians(" . $lon . "))
-                     + sin(radians(" . $lat . "))
-                     * sin(radians(users.latitude))) AS distance"))
+                       * cos(radians(users.longitude) - radians('.$lon.'))
+                     + sin(radians('.$lat.'))
+                     * sin(radians(users.latitude))) AS distance'))
                             ->leftJoin('assignJobs', 'users.id', '=', 'assignJobs.agent_id')->orWhere('assignJobs.agent_id', '=', null)
                             ->where(['users.usertype' => 'agent', 'users.isAvailable' => 1])
->>>>>>> 03dd3316892352f429901c2a346c3fbcf57fada9
                             ->orderBy('distance', 'desc')
                             ->take(3)
                             ->get();
+
                     return response()->json(['message' => 'Nearest agents', 'data' => $agents, 'response_code' => 1], 200);
                 } else {
                     return response()->json(['message' => 'Custmor is not exist', 'data' => null, 'response_code' => 0], 200);
@@ -60,14 +57,6 @@ class ApiAgentController extends Controller
             return response()->json(['message' => 'Customer id is missing', 'data' => null, 'response_code' => 0], 200);
         }
     }
-
-    /**
-     *
-     *
-     *
-     *
-     *
-     */
 
     public function handOverJob(Request $request)
     {
@@ -96,12 +85,7 @@ class ApiAgentController extends Controller
     }
 
     /**
-     *
-     *
-     * View assigned job by a specific agent
-     *
-     *
-     *
+     * View assigned job by a specific agent.
      */
     public function assignedJobView(Request $request)
     {
@@ -125,16 +109,12 @@ class ApiAgentController extends Controller
     }
 
     /**
-     *
-     *
-     * Update   assigned job status i.e reject or accept
-     *
-     *
+     * Update   assigned job status i.e reject or accept.
      */
     public function jobAction(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->usertype == 'customer') {
+        if ('customer' == $user->usertype) {
             return response()->json(['message' => 'You must be agent', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
@@ -167,20 +147,17 @@ class ApiAgentController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
+
         return response()->json(['message' => 'Some fields missing', 'data' => null, 'response_code' => 0], 200);
     }
 
     /**
-     *
-     *
-     * Update job status 1 :: It's complete
-     *
-     *
+     * Update job status 1 :: It's complete.
      */
     public function completeJob(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->usertype == 'customer') {
+        if ('customer' == $user->usertype) {
             return response()->json(['message' => 'You must be agent', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
@@ -191,30 +168,28 @@ class ApiAgentController extends Controller
         }
 
         try {
-          $job = JobsModel::where('id', '=', $request->jobid)->first();
-          $job->job_status = 1;
-          $job->update();
-          $ajob = AssignJob::where(["job_id" => $job->id, "agent_id" => $user->id])->get()->first();
-          $ajob->jobstatus = 4;
-          $ajob->update();
-          return response()->json(['message' => 'Complete this job success', 'response_code' => 1], 200);
+            $job = JobsModel::where('id', '=', $request->jobid)->first();
+            $job->job_status = 1;
+            $job->update();
+            $ajob = AssignJob::where(['job_id' => $job->id, 'agent_id' => $user->id])->get()->first();
+            $ajob->jobstatus = 4;
+            $ajob->update();
+
+            return response()->json(['message' => 'Complete this job success', 'response_code' => 1], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'response_code' => 0], 500);
         }
+
         return response()->json(['message' => 'Some fields missing', 'response_code' => 0], 200);
     }
 
     /**
-     *
-     *
-     * Update customer accept agent
-     *
-     *
+     * Update customer accept agent.
      */
     public function acceptAgent(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->usertype == 'agent') {
+        if ('agent' == $user->usertype) {
             return response()->json(['message' => 'You must be customer', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
@@ -227,7 +202,7 @@ class ApiAgentController extends Controller
         }
 
         try {
-            if ($ajob = AssignJob::where(['job_id'=>$request->jobid,'agent_id'=>$request->agentId,'customer_id'=>$user->id,])->first()) {
+            if ($ajob = AssignJob::where(['job_id' => $request->jobid, 'agent_id' => $request->agentId, 'customer_id' => $user->id])->first()) {
                 $ajob->jobstatus = $request->status;
                 $ajob->update();
                 $action = $ajob;
@@ -242,23 +217,20 @@ class ApiAgentController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);
         }
+
         return response()->json(['message' => 'Some fields missing', 'data' => null, 'response_code' => 0], 200);
     }
 
     /**
-     *
-     *
-     * view all  job assigned to a  particular agent
+     * view all  job assigned to a  particular agent.
      *
      * which are not taken any action
-     *
-     *
      */
     public function acceptedJobList(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
         try {
-            if ($user->usertype == 'agent') {
+            if ('agent' == $user->usertype) {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
                     ->where(['assignJobs.jobstatus' => '1', 'assignJobs.agent_id' => $user->id])
                     ->get();
@@ -269,11 +241,7 @@ class ApiAgentController extends Controller
                 }
             } else {
                 $jobList = AssignJob::join('jobs', 'jobs.id', '=', 'assignJobs.job_id')
-<<<<<<< HEAD
                     ->where(['assignJobs.customer_id' => $user->id])->get();
-=======
-                                ->where(['assignJobs.customer_id' => $user->id , 'assignJobs.jobstatus' => '1'])->get();
->>>>>>> 03dd3316892352f429901c2a346c3fbcf57fada9
                 if (count($jobList) > 0) {
                     return response()->json(['message' => 'This is job list', 'data' => $jobList, 'response_code' => 1], 200);
                 } else {
@@ -284,14 +252,11 @@ class ApiAgentController extends Controller
             return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
+
     /**
-     *
-     *
-     * view all  job assigned to a  particular agent
+     * view all  job assigned to a  particular agent.
      *
      * which are not taken any action
-     *
-     *
      */
     public function allJobView(Request $request)
     {
@@ -351,15 +316,9 @@ class ApiAgentController extends Controller
             return response()->json(['message' => 'Server Error', 'data' => null, 'response_code' => 0], 500);
         }
     }
+
     /**
-     *
-     *
-     *
-     *
-     * Agent history i.e view all job that are accepted are rejected by particular agent
-     *
-     *
-     *
+     * Agent history i.e view all job that are accepted are rejected by particular agent.
      */
     public function agentHistory(Request $request)
     {
@@ -382,16 +341,8 @@ class ApiAgentController extends Controller
         }
     }
 
-
     /**
-     *
-     *
-     *
-     *
-     * Get Completed Job list
-     *
-     *
-     *
+     * Get Completed Job list.
      */
     public function agentCompletedJob(Request $request)
     {
@@ -418,7 +369,7 @@ class ApiAgentController extends Controller
     public function addQuotation(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->usertype == 'customer') {
+        if ('customer' == $user->usertype) {
             return response()->json(['message' => 'this is no agent', 'data' => null, 'response_code' => 0], 200);
         }
         $validator = Validator::make($request->all(), [
@@ -449,6 +400,7 @@ class ApiAgentController extends Controller
                     $document->fileName = $docurl;
                     $document->save();
                 }
+
                 return response()->json(['message' => 'Successfully added quotation', 'data' => $question, 'response_code' => 1], 200);
             } else {
                 return response()->json(['message' => 'Addition is failed', 'data' => null, 'response_code' => 0], 200);
@@ -465,16 +417,19 @@ class ApiAgentController extends Controller
         if ($request->has('quotaion_id')) {
             $quotation = QuotationModel::join('jobs', 'jobs.id', '=', 'quotations.job_id')
                             ->where(['quotations.id' => $request->quotaion_id])->get();
+
             return response()->json(['message' => 'Get quotation by quotation ID', 'data' => $quotation, 'response_code' => 1], 200);
         } else {
-            if ($user->usertype == 'agent') {
+            if ('agent' == $user->usertype) {
                 $quotations = QuotationModel::join('jobs', 'jobs.id', '=', 'quotations.job_id')
                                 ->where(['quotations.agent_id' => $user->id])->get();
+
                 return response()->json(['message' => 'Get quotation list by agent id', 'data' => $quotations, 'response_code' => 1], 200);
             } else {
                 $quotations = JobsModel::join('quotations', 'jobs.id', '=', 'quotations.job_id')
                 ->join('assignJobs', 'jobs.id', '=', 'assignJobs.job_id')
                                 ->where(['jobs.user_id' => $user->id])->get();
+
                 return response()->json(['message' => 'Get quotation list by customer id', 'data' => $quotations, 'response_code' => 1], 200);
             }
         }
@@ -488,12 +443,13 @@ class ApiAgentController extends Controller
             return response()->json(['message' => 'No jobid', 'data' => null, 'response_code' => 0], 200);
         }
         try {
-            $ojob = JobsModel::where(['id'=>$request->jobid])->first();
+            $ojob = JobsModel::where(['id' => $request->jobid])->first();
             $format = 'Y-m-d H:i:s';
             $exp_d = DateTime::createFromFormat($format, $ojob->expired_date);
             $exp_d->modify('+1 year');
             $ojob->expired_date = $exp_d;
             $ojob->update();
+
             return response()->json(['message' => 'jobs Successfully renewed', 'data' => null, 'response_code' => 1], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'Server Error', 'data' => $exception, 'response_code' => 0], 500);

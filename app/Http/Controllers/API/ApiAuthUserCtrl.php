@@ -17,6 +17,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Auth\Events\Registered;
 use App\Model\CompanyModel;
 use Illuminate\Support\Facades\Storage;
+use App\User;
 
 // use Aloha\Twilio\Support\Laravel\Facade;
 
@@ -156,8 +157,8 @@ class ApiAuthUserCtrl extends Controller
         $fields_string = "";
 
         //url-ify the data for the POST
-        foreach($fields as $key=>$value) {
-            $fields_string .= $key.'='.$value.'&'; 
+        foreach ($fields as $key=>$value) {
+            $fields_string .= $key.'='.$value.'&';
         }
         rtrim($fields_string, '&');
 
@@ -165,9 +166,9 @@ class ApiAuthUserCtrl extends Controller
         $ch = curl_init();
 
         //set the url, number of POST vars, POST data
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_POST, count($fields));
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_USERPWD, "ACdc7e1a5c2afd8c7f442741dfd9cef07e:2e38ac44561e3a14e5cc5302b3411f40");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
