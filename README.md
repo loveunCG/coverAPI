@@ -3,6 +3,8 @@
 ## This is job managerment platform using Laravel Framework with JWT, FCM, TWILLO and Reactjs(for admin portal)
 
 This is api server and admin portal for easycover app 
+Front-end is reactjs 
+
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://github.com/loveunCG/coverAPI.git)
 
