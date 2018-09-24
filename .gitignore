@@ -12,3 +12,4 @@ yarn-error.log
 .env
 /.phpintel
 /nbproject/private/
+/vendor

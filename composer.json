@@ -10,10 +10,12 @@
         "brozot/laravel-fcm": "^1.2",
         "doctrine/dbal": "^2.6",
         "fideloper/proxy": "~3.3",
+        "jadjoubran/laravel-angular": "^0.4.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "symfony/polyfill-iconv": "^1.6",
-        "tymon/jwt-auth": "^0.5.12"
+        "tymon/jwt-auth": "^0.5.12",
+        "unisharp/laravel-filemanager": "v2.0.0-alpha4"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

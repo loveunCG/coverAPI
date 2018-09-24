@@ -1222,6 +1222,127 @@
         ]
     },
     {
+        "name": "intervention/image",
+        "version": "2.4.2",
+        "version_normalized": "2.4.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Intervention/image.git",
+            "reference": "e82d274f786e3d4b866a59b173f42e716f0783eb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Intervention/image/zipball/e82d274f786e3d4b866a59b173f42e716f0783eb",
+            "reference": "e82d274f786e3d4b866a59b173f42e716f0783eb",
+            "shasum": ""
+        },
+        "require": {
+            "ext-fileinfo": "*",
+            "guzzlehttp/psr7": "~1.1",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9.2",
+            "phpunit/phpunit": "^4.8 || ^5.7"
+        },
+        "suggest": {
+            "ext-gd": "to use GD library based image processing.",
+            "ext-imagick": "to use Imagick based image processing.",
+            "intervention/imagecache": "Caching extension for the Intervention Image library"
+        },
+        "time": "2018-05-29T14:19:03+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.4-dev"
+            },
+            "laravel": {
+                "providers": [
+                    "Intervention\\Image\\ImageServiceProvider"
+                ],
+                "aliases": {
+                    "Image": "Intervention\\Image\\Facades\\Image"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Intervention\\Image\\": "src/Intervention/Image"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Oliver Vogel",
+                "email": "oliver@olivervogel.com",
+                "homepage": "http://olivervogel.com/"
+            }
+        ],
+        "description": "Image handling and manipulation library with support for Laravel integration",
+        "homepage": "http://image.intervention.io/",
+        "keywords": [
+            "gd",
+            "image",
+            "imagick",
+            "laravel",
+            "thumbnail",
+            "watermark"
+        ]
+    },
+    {
+        "name": "jadjoubran/laravel-angular",
+        "version": "0.4.0",
+        "version_normalized": "0.4.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jadjoubran/laravel-angular.git",
+            "reference": "e402f5d4477481095ac98aaf51544064bf808e5b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/jadjoubran/laravel-angular/zipball/e402f5d4477481095ac98aaf51544064bf808e5b",
+            "reference": "e402f5d4477481095ac98aaf51544064bf808e5b",
+            "shasum": ""
+        },
+        "require": {
+            "laravel/framework": "^5.1",
+            "php": ">=5.5.9"
+        },
+        "require-dev": {
+            "illuminate/support": "^5.1"
+        },
+        "time": "2017-12-17T11:41:06+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Jadjoubran\\LaravelAngular\\Provider\\LaravelServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jadjoubran\\LaravelAngular\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jad Joubran",
+                "email": "joubran.jad@gmail.com"
+            }
+        ],
+        "description": "Laravel & Angular package"
+    },
+    {
         "name": "jakub-onderka/php-console-color",
         "version": "0.1",
         "version_normalized": "0.1.0.0",
@@ -5057,6 +5178,83 @@
             "jwt",
             "laravel",
             "tymon"
+        ]
+    },
+    {
+        "name": "unisharp/laravel-filemanager",
+        "version": "v2.0.0-alpha4",
+        "version_normalized": "2.0.0.0-alpha4",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/UniSharp/laravel-filemanager.git",
+            "reference": "65ebbf7f092f4ac3e79b06d19ee1c7799126bc17"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/UniSharp/laravel-filemanager/zipball/65ebbf7f092f4ac3e79b06d19ee1c7799126bc17",
+            "reference": "65ebbf7f092f4ac3e79b06d19ee1c7799126bc17",
+            "shasum": ""
+        },
+        "require": {
+            "ext-exif": "*",
+            "ext-fileinfo": "*",
+            "illuminate/config": "5.4.* || 5.5.* || 5.6.*",
+            "illuminate/container": "5.4.* || 5.5.* || 5.6.*",
+            "illuminate/filesystem": "5.4.* || 5.5.* || 5.6.*",
+            "illuminate/http": "5.4.* || 5.5.* || 5.6.*",
+            "illuminate/support": "5.4.* || 5.5.* || 5.6.*",
+            "intervention/image": "2.*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "^0.9.9",
+            "phpunit/phpunit": "^6.2",
+            "squizlabs/php_codesniffer": "^3.1"
+        },
+        "suggest": {
+            "ext-gd": "to use GD library based image processing.",
+            "ext-imagick": "to use Imagick based image processing."
+        },
+        "time": "2018-07-05T09:40:18+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "UniSharp\\LaravelFilemanager\\LaravelFilemanagerServiceProvider"
+                ],
+                "aliases": []
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "UniSharp\\LaravelFilemanager\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Trevor Sawler",
+                "email": "trevor.sawler@gmail.com"
+            },
+            {
+                "name": "UniSharp Ltd.",
+                "email": "opensource@unisharp.com"
+            }
+        ],
+        "description": "A file upload/editor intended for use with Laravel 5 and CKEditor / TinyMCE",
+        "keywords": [
+            "CKEditor",
+            "file",
+            "filemanager",
+            "image",
+            "laravel",
+            "manager",
+            "tinymce",
+            "upload"
         ]
     },
     {
